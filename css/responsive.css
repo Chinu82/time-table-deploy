@@ -1,0 +1,288 @@
+/* ==========================================
+   STUDYFLOW - RESPONSIVE DESIGN
+   ========================================== */
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .section {
+        padding: 80px 32px;
+    }
+
+    .date-time-display {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .testbooks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    .nav-links {
+        gap: 4px;
+    }
+
+    .nav-link {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .section {
+        padding: 60px 20px;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    /* Navigation */
+    .main-nav {
+        padding: 12px 20px;
+        flex-wrap: wrap;
+    }
+
+    .nav-right {
+        gap: 8px;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--nav-bg);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 20px;
+        gap: 4px;
+        border-bottom: 1px solid var(--glass-border);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all var(--transition);
+        position: fixed;
+        left: 0;
+        transform: none;
+    }
+
+    .nav-links.open {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-link {
+        padding: 14px 20px;
+        font-size: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-link.active::after {
+        display: none;
+    }
+
+    /* Login */
+    .login-card {
+        padding: 32px 24px;
+        margin: 16px;
+    }
+
+    .login-title {
+        font-size: 1.75rem;
+    }
+
+    /* Timeline */
+    .timeline-container::before {
+        left: 20px;
+    }
+
+    .timeline-item,
+    .timeline-item:nth-child(odd),
+    .timeline-item:nth-child(even) {
+        flex-direction: row;
+        padding-left: 48px;
+    }
+
+    .timeline-dot {
+        left: 20px;
+        transform: translateX(-50%);
+    }
+
+    .timeline-card {
+        width: 100%;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-card,
+    .timeline-item:nth-child(even) .timeline-card {
+        transform: translateX(0);
+    }
+
+    /* Mode selector */
+    .mode-pill {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mode-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        flex: 1;
+        text-align: center;
+    }
+
+    /* Progress */
+    .progress-ring-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+
+    .progress-percent {
+        font-size: 2.25rem;
+    }
+
+    /* Test books */
+    .testbooks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .testbook-card {
+        padding: 24px;
+    }
+
+    /* Profile */
+    .profile-card {
+        padding: 24px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    /* Morph section */
+    .morph-word {
+        font-size: clamp(2rem, 12vw, 4rem);
+    }
+
+    .morph-progress-bar {
+        width: 150px;
+    }
+
+    /* Celebration */
+    .celebration-title {
+        font-size: 2rem;
+    }
+
+    .celebration-text {
+        font-size: 1rem;
+    }
+
+    /* File list */
+    .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .file-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    /* Back to top */
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .welcome-name {
+        font-size: 1.75rem;
+    }
+
+    .anim-line {
+        font-size: 1.25rem;
+    }
+
+    .clock-block {
+        flex-wrap: wrap;
+    }
+
+    .time-text {
+        font-size: 2.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .upload-card {
+        padding: 24px 16px;
+    }
+
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+/* Large desktop */
+@media (min-width: 1440px) {
+    .section {
+        max-width: 1320px;
+    }
+
+    .testbooks-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Touch devices - disable hover-only effects */
+@media (hover: none) {
+    .tilt-card {
+        transform: none !important;
+    }
+
+    .timeline-card:hover {
+        transform: none;
+    }
+
+    .testbook-card:hover {
+        transform: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --text-secondary: #c0c8dd;
+    }
+
+    [data-theme="light"] {
+        --glass-bg: rgba(0, 0, 0, 0.08);
+        --glass-border: rgba(0, 0, 0, 0.25);
+        --text-secondary: #333344;
+    }
+}

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudyFlow - Your personal cinematic study timetable and productivity companion">
+    <title>StudyFlow</title>
+
+    <!-- SVG Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236c63ff'/%3E%3Cstop offset='100%25' stop-color='%238f88ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Georgia, serif' font-weight='bold'%3E◈%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<base target="_blank">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <canvas id="particleCanvas"></canvas>
+        <div class="gradient-blob blob-1"></div>
+        <div class="gradient-blob blob-2"></div>
+        <div class="gradient-blob blob-3"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Login Overlay -->
+    <section id="loginSection" class="login-section" aria-label="Login">
+        <div class="login-card glass-card">
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Let's make today count.</p>
+            </div>
+            <form id="loginForm" class="login-form" novalidate>
+                <div class="form-group">
+                    <label for="userName">What's your name?</label>
+                    <input type="text" id="userName" name="userName" placeholder="Enter your name" required autocomplete="name">
+                    <span class="error-message" id="nameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email <span class="optional">(optional)</span></label>
+                    <input type="email" id="userEmail" name="userEmail" placeholder="you@example.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="userGoal">What are you working towards? <span class="optional">(optional)</span></label>
+                    <input type="text" id="userGoal" name="userGoal" placeholder="Become a better developer">
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow">
+                    <span>Continue</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </form>
+            <div id="returningUser" class="returning-user hidden">
+                <p class="welcome-back-text">Welcome back, <span id="returningName"></span>.</p>
+                <button id="continueBtn" class="btn btn-primary btn-glow">Continue</button>
+                <button id="changeProfileBtn" class="btn btn-text">Not you? Change profile</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main App -->
+    <main id="mainApp" class="main-app hidden">
+        <!-- Navigation -->
+        <nav class="main-nav glass-nav" id="mainNav">
+            <div class="nav-brand">
+                <span class="brand-icon">◈</span>
+                <span class="brand-text">StudyFlow</span>
+            </div>
+
+            <div class="nav-right">
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#welcome" class="nav-link active" data-section="welcome">Today</a></li>
+                <li><a href="#dashboard" class="nav-link" data-section="dashboard">Progress</a></li>
+                <li><a href="#timetable" class="nav-link" data-section="timetable">Timetable</a></li>
+                <li><a href="#testbooks" class="nav-link" data-section="testbooks">Test Books</a></li>
+                <li><a href="#profile" class="nav-link" data-section="profile">Profile</a></li>
+            </ul>
+        </nav>
+
+        <!-- Welcome Section -->
+        <section id="welcome" class="section welcome-section">
+            <div class="welcome-content">
+                <div class="welcome-text-container">
+                    <h2 class="welcome-name" id="welcomeName">Welcome back.</h2>
+                    <div class="animated-lines">
+                        <p class="anim-line" data-delay="0">Your time.</p>
+                        <p class="anim-line" data-delay="400">Your focus.</p>
+                        <p class="anim-line" data-delay="800">Your progress.</p>
+                    </div>
+                </div>
+                <blockquote class="inspirational-quote">
+                    <span class="quote-mark">"</span>
+                    <p>Success is the sum of small efforts,<br>repeated day in and day out.</p>
+                    <cite>— Robert Collier</cite>
+                </blockquote>
+            </div>
+            <div class="scroll-indicator">
+                <span>Scroll to begin</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- Cinematic Morphing Section -->
+        <section id="morphSection" class="section morph-section">
+            <div class="morph-sticky">
+                <div class="morph-visual">
+                    <div class="morph-glow"></div>
+                    <div class="morph-ring ring-1"></div>
+                    <div class="morph-ring ring-2"></div>
+                    <div class="morph-ring ring-3"></div>
+                    <div class="morph-particles" id="morphParticles"></div>
+                </div>
+                <div class="morph-text-container">
+                    <div class="morph-word" data-word="FOCUS">FOCUS</div>
+                    <div class="morph-word" data-word="PLAN">PLAN</div>
+                    <div class="morph-word" data-word="EXECUTE">EXECUTE</div>
+                    <div class="morph-word" data-word="COMPLETE">COMPLETE</div>
+                </div>
+                <div class="morph-progress-bar">
+                    <div class="morph-progress-fill" id="morphProgressFill"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Header -->
+        <section id="dashboard" class="section dashboard-section">
+            <div class="dashboard-header reveal-fade-up">
+                <div class="date-time-display">
+                    <div class="date-block">
+                        <span id="currentDay" class="day-text">Tuesday</span>
+                        <span id="currentDate" class="date-text">25 August 2026</span>
+                    </div>
+                    <div class="clock-block">
+                        <span id="currentTime" class="time-text">11:54</span>
+                        <span class="clock-separator">:</span>
+                        <span id="currentSeconds" class="seconds-text">23</span>
+                        <span id="amPm" class="ampm-text">PM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode Selector -->
+            <div class="mode-selector reveal-fade-up" data-delay="100">
+                <h3 class="section-label">Today's Schedule</h3>
+                <div class="mode-pill" role="tablist" aria-label="Schedule mode">
+                    <button class="mode-btn active" data-mode="WFO" role="tab" aria-selected="true">WFO</button>
+                    <button class="mode-btn" data-mode="REMOTE" role="tab" aria-selected="false">Remote</button>
+                    <button class="mode-btn" data-mode="HOLIDAY" role="tab" aria-selected="false">Holiday</button>
+                    <div class="mode-indicator"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timetable Section -->
+        <section id="timetable" class="section timetable-section">
+            <div class="section-header reveal-fade-up">
+                <h2 class="section-title">Your Timeline</h2>
+                <p class="section-subtitle">Check off tasks as you complete them</p>
+            </div>
+            <div class="timeline-container" id="timelineContainer">
+                <!-- Dynamically rendered -->
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress" class="section progress-section">
+            <div class="progress-container reveal-scale">
+                <h2 class="section-title">Today's Progress</h2>
+                <div class="progress-ring-wrapper">
+                    <svg class="progress-ring" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="var(--accent)"/>
+                                <stop offset="100%" stop-color="var(--accent-light)"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="100" cy="100" r="85"/>
+                        <circle class="progress-ring-fill" id="progressRingFill" cx="100" cy="100" r="85"/>
+                    </svg>
+                    <div class="progress-center">
+                        <span class="progress-percent" id="progressPercent">0%</span>
+                        <span class="progress-label" id="progressTasks">0 / 0 Tasks</span>
+                    </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
+                    </div>
+                </div>
+                <p class="progress-message" id="progressMessage">Let's get started.</p>
+            </div>
+        </section>
+
+        <!-- Day Complete Celebration -->
+        <section id="celebration" class="section celebration-section hidden">
+            <div class="celebration-content">
+                <div class="celebration-ring"></div>
+                <h2 class="celebration-title">DAY COMPLETE</h2>
+                <p class="celebration-text">You showed up.<br>You did the work.<br>That's what matters.</p>
+                <div class="celebration-particles" id="celebrationParticles"></div>
+            </div>
+        </section>
+
+        <!-- Test Books Section -->
+        <section id="testbooks" class="section testbooks-section">
+            <div class="section-header reveal-fade-up">
+                <h2 class="section-title">Test Books</h2>
+                <p class="section-subtitle">Your study materials and resources</p>
+            </div>
+            <div class="testbooks-grid" id="testbooksGrid">
+                <article class="testbook-card glass-card tilt-card" data-category="java">
+                    <div class="testbook-icon">☕</div>
+                    <h3 class="testbook-title">Java</h3>
+                    <p class="testbook-desc">Practice Java concepts and interview questions.</p>
+                    <button class="btn btn-secondary testbook-open">Open</button>
+                </article>
+                <article class="testbook-card glass-card tilt-card" data-category="spring">
+                    <div class="testbook-icon">🌱</div>
+                    <h3 class="testbook-title">Spring Boot</h3>
+                    <p class="testbook-desc">Framework fundamentals and advanced patterns.</p>
+                    <button class="btn btn-secondary testbook-open">Open</button>
+                </article>
+                <article class="testbook-card glass-card tilt-card" data-category="sql">
+                    <div class="testbook-icon">🗄️</div>
+                    <h3 class="testbook-title">SQL</h3>
+                    <p class="testbook-desc">Database queries, optimization, and design.</p>
+                    <button class="btn btn-secondary testbook-open">Open</button>
+                </article>
+                <article class="testbook-card glass-card tilt-card" data-category="react">
+                    <div class="testbook-icon">⚛️</div>
+                    <h3 class="testbook-title">React</h3>
+                    <p class="testbook-desc">Component architecture and hooks deep dive.</p>
+                    <button class="btn btn-secondary testbook-open">Open</button>
+                </article>
+                <article class="testbook-card glass-card tilt-card" data-category="aptitude">
+                    <div class="testbook-icon">🧮</div>
+                    <h3 class="testbook-title">Aptitude</h3>
+                    <p class="testbook-desc">Logical reasoning and quantitative practice.</p>
+                    <button class="btn btn-secondary testbook-open">Open</button>
+                </article>
+                <article class="testbook-card glass-card tilt-card" data-category="mock">
+                    <div class="testbook-icon">📝</div>
+                    <h3 class="testbook-title">Mock Tests</h3>
+                    <p class="testbook-desc">Full-length simulated assessments.</p>
+                    <button class="btn btn-secondary testbook-open">Open</button>
+                </article>
+            </div>
+            <div class="file-upload-area reveal-fade-up">
+                <div class="upload-card glass-card">
+                    <h3 class="upload-title">Add Test Book</h3>
+                    <p class="upload-desc">Select PDF, DOC, DOCX, or TXT files from your device.</p>
+                    <label class="file-input-label">
+                        <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" multiple hidden>
+                        <span class="btn btn-primary">Browse Files</span>
+                    </label>
+                    <div class="file-list" id="fileList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="section profile-section">
+            <div class="profile-card glass-card reveal-scale">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <span id="profileInitial">U</span>
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="profileName">User</h2>
+                        <p class="profile-goal" id="profileGoal">No goal set</p>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="statStreak">0</span>
+                        <span class="stat-label">Day Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statTasks">0</span>
+                        <span class="stat-label">Tasks Done</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statDays">0</span>
+                        <span class="stat-label">Study Days</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statCompletion">0%</span>
+                        <span class="stat-label">Avg. Completion</span>
+                    </div>
+                </div>
+                <button id="resetDataBtn" class="btn btn-danger btn-small">Reset All Data</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>StudyFlow — Built for focus. No data leaves your device.</p>
+        </footer>
+    </main>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/timetable.js"></script>
+    <script src="js/fileManager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
