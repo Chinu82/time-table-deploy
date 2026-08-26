@@ -16,15 +16,6 @@
     .testbooks-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
-
-    .nav-links {
-        gap: 4px;
-    }
-
-    .nav-link {
-        padding: 8px 16px;
-        font-size: 0.85rem;
-    }
 }
 
 /* Mobile */
@@ -37,55 +28,41 @@
         font-size: 1.75rem;
     }
 
-    /* Navigation */
-    .main-nav {
-        padding: 12px 20px;
-        flex-wrap: wrap;
-    }
-
-    .nav-right {
+    /* Floating progress widget */
+    .floating-progress {
+        top: 12px;
+        right: 12px;
+        padding: 8px 12px;
         gap: 8px;
     }
 
-    .mobile-menu-btn {
-        display: flex;
+    .floating-progress-ring {
+        width: 40px;
+        height: 40px;
     }
 
-    .nav-links {
-        position: fixed;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background: var(--nav-bg);
-        backdrop-filter: blur(20px);
-        flex-direction: column;
-        padding: 20px;
-        gap: 4px;
-        border-bottom: 1px solid var(--glass-border);
-        transform: translateY(-100%);
-        opacity: 0;
-        visibility: hidden;
-        transition: all var(--transition);
-        position: fixed;
-        left: 0;
-        transform: none;
+    .fp-percent {
+        font-size: 0.65rem;
     }
 
-    .nav-links.open {
-        transform: translateY(0);
-        opacity: 1;
-        visibility: visible;
+    .fp-info {
+        min-width: 60px;
     }
 
-    .nav-link {
-        padding: 14px 20px;
-        font-size: 1rem;
-        width: 100%;
-        text-align: center;
+    .fp-tasks {
+        font-size: 0.7rem;
     }
 
-    .nav-link.active::after {
-        display: none;
+    .fp-msg {
+        font-size: 0.6rem;
+    }
+
+    /* Theme toggle */
+    .theme-toggle-float {
+        top: 12px;
+        left: 12px;
+        width: 36px;
+        height: 36px;
     }
 
     /* Login */
@@ -96,6 +73,12 @@
 
     .login-title {
         font-size: 1.75rem;
+    }
+
+    /* Welcome */
+    .welcome-section {
+        min-height: 50vh;
+        padding: 60px 20px 30px;
     }
 
     /* Timeline */
@@ -135,16 +118,6 @@
         font-size: 0.85rem;
         flex: 1;
         text-align: center;
-    }
-
-    /* Progress */
-    .progress-ring-wrapper {
-        width: 180px;
-        height: 180px;
-    }
-
-    .progress-percent {
-        font-size: 2.25rem;
     }
 
     /* Test books */
@@ -212,11 +185,11 @@
 /* Small mobile */
 @media (max-width: 480px) {
     .welcome-name {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
 
-    .anim-line {
-        font-size: 1.25rem;
+    .welcome-tagline {
+        font-size: 0.95rem;
     }
 
     .clock-block {
@@ -238,11 +211,6 @@
 
     .upload-card {
         padding: 24px 16px;
-    }
-
-    .theme-toggle {
-        width: 38px;
-        height: 38px;
     }
 }
 
