@@ -231,6 +231,48 @@
     <script src="js/login.js"></script>
     <script src="js/timetable.js"></script>
     <script src="js/fileManager.js"></script>
+    <script src="js/chatbot.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Chatbot Toggle (Left Side) -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open assistant">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </button>
+
+    <!-- Chatbot Panel (Left Side) -->
+    <div class="chatbot-panel" id="chatbotPanel">
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">
+                <span>◈</span>
+            </div>
+            <div class="chatbot-title">
+                <h4>StudyFlow Assistant</h4>
+                <span class="chatbot-status">Online</span>
+            </div>
+            <button class="chatbot-close" id="chatbotClose" aria-label="Close assistant">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages"></div>
+        <div class="chatbot-chips">
+            <button class="chatbot-chip" data-question="What's next?">🎯 Next Up</button>
+            <button class="chatbot-chip" data-question="How much time remaining?">⏰ Time Left</button>
+            <button class="chatbot-chip" data-question="What subjects today?">📚 Subjects</button>
+            <button class="chatbot-chip" data-question="What's my streak?">🔥 Streak</button>
+            <button class="chatbot-chip" data-question="Give me a study tip">💡 Tips</button>
+            <button class="chatbot-chip" data-question="When is doubt session?">🧐 Doubts</button>
+            <button class="chatbot-chip" data-question="What mode am I in?">📅 Mode</button>
+            <button class="chatbot-chip" data-question="What have I completed?">✅ Done</button>
+            <button class="chatbot-chip" data-question="How much progress?">📊 Progress</button>
+            <button class="chatbot-chip" data-question="Motivate me">🔥 Motivation</button>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbotInput" placeholder="Ask me anything..." autocomplete="off">
+            <button id="chatbotSend" aria-label="Send message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+        </div>
+    </div>
+
 </body>
 </html>

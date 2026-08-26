@@ -1,53 +1,72 @@
 /* ==========================================
    STUDYFLOW - TIMETABLE MODULE
-   Schedule data, rendering, and task management
+   Your actual exam prep schedule
    ========================================== */
 
-// ==========================================
-// EDIT YOUR SCHEDULES HERE
-// ==========================================
 const schedules = {
-    WFO: [
-        { time: "06:00", title: "Wake Up & Fresh Up", category: "routine" },
-        { time: "06:30", title: "Exercise / Yoga", category: "health" },
-        { time: "07:30", title: "Breakfast & Plan", category: "routine" },
-        { time: "09:00", title: "Office Commute / Start", category: "work" },
-        { time: "13:00", title: "Lunch Break", category: "routine" },
-        { time: "18:00", title: "Return Home", category: "routine" },
-        { time: "19:00", title: "Java Study Session", category: "study" },
-        { time: "20:30", title: "Project Work", category: "coding" },
-        { time: "22:00", title: "Revision & Notes", category: "study" },
-        { time: "23:00", title: "Wind Down", category: "routine" }
+    REMOTE: [
+        { time: "05:30", title: "Wake Up, Freshen Up, Hydrate", category: "routine" },
+        { time: "06:00", title: "Study Slot 1 — Reasoning (Puzzles / Syllogism / Direction)", category: "reasoning" },
+        { time: "07:15", title: "Break — Walk / Stretch", category: "break" },
+        { time: "07:25", title: "Breakfast", category: "break" },
+        { time: "07:45", title: "Study Slot 2 — English Grammar + Cloze Test", category: "english" },
+        { time: "09:00", title: "Break", category: "break" },
+        { time: "09:10", title: "Study Slot 3 — GK/GS Deep Dive (History / Polity / Geography)", category: "gkgs" },
+        { time: "10:25", title: "Break", category: "break" },
+        { time: "10:35", title: "Study Slot 4 — English Vocab / Idioms", category: "english" },
+        { time: "11:00", title: "Work Hours", category: "work" },
+        { time: "20:00", title: "Freshen Up / Unwind", category: "routine" },
+        { time: "20:30", title: "Dinner", category: "break" },
+        { time: "21:00", title: "Study Slot 5 — Quant / Aptitude (Arithmetic / Algebra)", category: "quant" },
+        { time: "22:15", title: "Break", category: "break" },
+        { time: "22:25", title: "Study Slot 6 — English RC Passage", category: "english" },
+        { time: "22:50", title: "Wind Down — Pack notes, no screens", category: "routine" },
+        { time: "23:00", title: "💤 Lights Off", category: "routine" }
     ],
 
-    REMOTE: [
-        { time: "06:30", title: "Morning Study", category: "study" },
-        { time: "08:00", title: "Breakfast", category: "routine" },
-        { time: "09:00", title: "Remote Work Start", category: "work" },
-        { time: "11:00", title: "Break & Stretch", category: "health" },
-        { time: "13:00", title: "Lunch", category: "routine" },
-        { time: "14:00", title: "Remote Work Continue", category: "work" },
-        { time: "17:00", title: "Exercise", category: "health" },
-        { time: "18:30", title: "Java / Spring Boot", category: "study" },
-        { time: "20:30", title: "Personal Project", category: "coding" },
-        { time: "22:00", title: "Revision", category: "study" }
+    WFO: [
+        { time: "05:30", title: "Wake Up, Freshen Up", category: "routine" },
+        { time: "06:00", title: "Study Slot 1 — Quant / Aptitude (20 Easy + 10 Medium MCQs)", category: "quant" },
+        { time: "07:15", title: "Break", category: "break" },
+        { time: "07:25", title: "Breakfast", category: "break" },
+        { time: "07:45", title: "Study Slot 2 — English Grammar + Para Jumbles", category: "english" },
+        { time: "09:00", title: "Break", category: "break" },
+        { time: "09:10", title: "Study Slot 3 — GK/GS Static Quick Revision", category: "gkgs" },
+        { time: "10:25", title: "Quick Get Ready", category: "routine" },
+        { time: "10:30", title: "🚗 Commute — GK Podcasts / Current Affairs Audio", category: "commute" },
+        { time: "11:00", title: "Work Hours", category: "work" },
+        { time: "20:00", title: "🚗 Commute Back — Flashcards on Phone", category: "commute" },
+        { time: "20:30", title: "Dinner", category: "break" },
+        { time: "21:00", title: "Study Slot 4 — Reasoning (Non-verbal / Missing Numbers)", category: "reasoning" },
+        { time: "22:15", title: "Break", category: "break" },
+        { time: "22:25", title: "Study Slot 5 — English Vocab Booster (Root Words)", category: "english" },
+        { time: "22:50", title: "Wind Down — Prep for tomorrow", category: "routine" },
+        { time: "23:00", title: "💤 Lights Off", category: "routine" }
     ],
 
     HOLIDAY: [
-        { time: "07:30", title: "Wake Up Naturally", category: "routine" },
-        { time: "08:00", title: "Deep Study Session", category: "study" },
-        { time: "10:00", title: "Coding Practice", category: "coding" },
-        { time: "11:30", title: "Mock Test", category: "test" },
-        { time: "13:00", title: "Lunch & Break", category: "routine" },
-        { time: "14:30", title: "Project Development", category: "coding" },
-        { time: "16:30", title: "Exercise / Walk", category: "health" },
-        { time: "17:30", title: "Review & Notes", category: "study" },
-        { time: "19:00", title: "Interview Prep", category: "study" },
-        { time: "20:30", title: "Relaxation", category: "routine" }
+        { time: "06:30", title: "Study Slot 1 — English (Full Grammar + 1 RC Set)", category: "english" },
+        { time: "07:45", title: "Break + Breakfast", category: "break" },
+        { time: "08:30", title: "Study Slot 2 — Reasoning (High-level Puzzles / Input-Output)", category: "reasoning" },
+        { time: "09:45", title: "Break", category: "break" },
+        { time: "10:00", title: "Study Slot 3 — GK/GS Deep Dive (Art & Culture / Environment)", category: "gkgs" },
+        { time: "11:15", title: "Break", category: "break" },
+        { time: "11:30", title: "Study Slot 4 — Quant Hard (Trigonometry / Algebra)", category: "quant" },
+        { time: "12:45", title: "🧐 Doubt Session 1 — Mock Test Mistake Analysis", category: "doubt" },
+        { time: "14:45", title: "Lunch / Rest Break", category: "break" },
+        { time: "15:30", title: "Study Slot 5 — English (Vocab + Spelling Checks)", category: "english" },
+        { time: "16:45", title: "🧐 Doubt Session 2 — 50 PYQs GK & Quant", category: "doubt" },
+        { time: "18:45", title: "Evening Tea Break", category: "break" },
+        { time: "19:00", title: "Study Slot 6 — Reasoning / Quant (Weak Areas)", category: "quant" },
+        { time: "20:15", title: "Break + Dinner", category: "break" },
+        { time: "20:45", title: "Study Slot 7 — GK/GS Rapid Fire Current Affairs", category: "gkgs" },
+        { time: "21:30", title: "Buffer / Extra Study", category: "study" },
+        { time: "22:15", title: "Wind Down — Relax, light news", category: "routine" },
+        { time: "23:00", title: "💤 Lights Off", category: "routine" }
     ]
 };
 
-let currentMode = "WFO";
+let currentMode = "REMOTE";
 let todayTasks = {};
 
 /**
@@ -99,7 +118,7 @@ function renderTimetable(mode) {
     container.classList.add("switching");
 
     setTimeout(() => {
-        const schedule = schedules[mode] || schedules.WFO;
+        const schedule = schedules[mode] || schedules.REMOTE;
         container.innerHTML = "";
 
         schedule.forEach((item, index) => {

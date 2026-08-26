@@ -22,6 +22,9 @@ function initApp() {
     // Initialize login flow
     initLogin();
 
+    // Initialize chatbot
+    initChatbot();
+
     // Add progress gradient to SVG
     addProgressGradient();
 
