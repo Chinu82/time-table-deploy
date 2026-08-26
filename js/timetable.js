@@ -60,10 +60,14 @@ function initTimetable() {
 }
 
 /**
- * Get today's date string for storage keys
+ * Get today's date string for storage keys (LOCAL time, not UTC)
  */
 function getTodayKey() {
-    return new Date().toISOString().split("T")[0];
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 /**
@@ -166,7 +170,8 @@ function toggleTask(taskId) {
 }
 
 /**
- * Update progress display with animation
+ * Update progress display with cinematic animation
+ * Also updates the floating progress widget
  */
 function updateProgress() {
     const schedule = schedules[currentMode];
@@ -177,36 +182,50 @@ function updateProgress() {
 
     const percentage = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
 
-    // Update ring with animation
-    const ringFill = document.getElementById("progressRingFill");
+    // Update floating progress widget
+    updateFloatingProgress(percentage, completedCount, totalTasks);
+
+    // Update message with crossfade
+    const messageEl = document.getElementById("progressMessage");
+    if (messageEl) {
+        const newMessage = getCompletionMessage(percentage);
+        if (messageEl.textContent !== newMessage) {
+            messageEl.classList.add("fade-out");
+            setTimeout(() => {
+                messageEl.textContent = newMessage;
+                messageEl.classList.remove("fade-out");
+                messageEl.classList.add("fade-in");
+                setTimeout(() => messageEl.classList.remove("fade-in"), 400);
+            }, 400);
+        }
+    }
+}
+
+/**
+ * Update the floating progress widget in top-right corner
+ */
+function updateFloatingProgress(percentage, completed, total) {
+    const ringFill = document.getElementById("fpRingFill");
+    const percentEl = document.getElementById("fpPercent");
+    const tasksEl = document.getElementById("fpTasks");
+    const msgEl = document.getElementById("fpMsg");
+
     if (ringFill) {
-        const circumference = 2 * Math.PI * 85;
+        const circumference = 2 * Math.PI * 42;
         const offset = circumference - (percentage / 100) * circumference;
         ringFill.style.strokeDashoffset = offset;
     }
 
-    // Update percent text with animation
-    const percentEl = document.getElementById("progressPercent");
     if (percentEl) {
-        animateNumber(percentEl, parseInt(percentEl.textContent) || 0, percentage, "%");
+        percentEl.textContent = percentage + "%";
     }
 
-    // Update task count
-    const tasksEl = document.getElementById("progressTasks");
     if (tasksEl) {
-        tasksEl.textContent = `${completedCount} / ${totalTasks} Tasks`;
+        tasksEl.textContent = `${completed} / ${total}`;
     }
 
-    // Update bar with animation
-    const barFill = document.getElementById("progressBarFill");
-    if (barFill) {
-        barFill.style.width = `${percentage}%`;
-    }
-
-    // Update message
-    const messageEl = document.getElementById("progressMessage");
-    if (messageEl) {
-        messageEl.textContent = getCompletionMessage(percentage);
+    if (msgEl) {
+        msgEl.textContent = getCompletionMessage(percentage);
     }
 }
 
@@ -214,12 +233,12 @@ function updateProgress() {
  * Get motivational message based on progress
  */
 function getCompletionMessage(percentage) {
-    if (percentage === 0) return "Let's get started.";
-    if (percentage < 30) return "Keep going.";
-    if (percentage < 50) return "You're building momentum.";
-    if (percentage < 70) return "You're doing great.";
-    if (percentage < 100) return "Almost there!";
-    return "Day completed! 🔥";
+    if (percentage === 0) return "Let's go";
+    if (percentage < 30) return "Keep going";
+    if (percentage < 50) return "Building momentum";
+    if (percentage < 70) return "Doing great";
+    if (percentage < 100) return "Almost there";
+    return "Day complete! 🔥";
 }
 
 /**
@@ -235,28 +254,6 @@ function showDayComplete() {
     setTimeout(() => {
         celebration.classList.add("hidden");
     }, 6000);
-}
-
-/**
- * Animate number counting
- */
-function animateNumber(element, from, to, suffix = "") {
-    const duration = 600;
-    const startTime = performance.now();
-
-    function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = Math.round(from + (to - from) * eased);
-        element.textContent = current + suffix;
-
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        }
-    }
-
-    requestAnimationFrame(update);
 }
 
 /**
@@ -293,3 +290,4 @@ window.toggleTask = toggleTask;
 window.updateProgress = updateProgress;
 window.initProgress = initProgress;
 window.schedules = schedules;
+window.updateFloatingProgress = updateFloatingProgress;

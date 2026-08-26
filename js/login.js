@@ -86,6 +86,7 @@ function handleLogin(e) {
 
 /**
  * Animate login card away and show main app
+ * NOTE: 650ms matches the CSS loginExit keyframe (0.6s)
  */
 function animateLoginExit() {
     const loginSection = document.getElementById("loginSection");
@@ -100,7 +101,6 @@ function animateLoginExit() {
         // Initialize app sections
         updateWelcomeUI();
         initClock();
-        initNavigation();
         initBackToTop();
         initModeSelector();
         initTimetable();
@@ -119,7 +119,7 @@ function animateLoginExit() {
         }, 300);
 
         window.scrollTo(0, 0);
-    }, 500);
+    }, 650);
 }
 
 /**
@@ -130,13 +130,13 @@ function updateWelcomeUI() {
     if (welcomeName && currentUser) {
         const hour = new Date().getHours();
         let greeting = "Good Evening";
-        
+
         if (hour < 12) {
             greeting = "Good Morning";
         } else if (hour < 17) {
             greeting = "Good Afternoon";
         }
-        
+
         welcomeName.textContent = `${greeting}, ${currentUser.name}.`;
     }
 }

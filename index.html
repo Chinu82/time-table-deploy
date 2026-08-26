@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<base target="_blank">
 </head>
 <body>
     <!-- Background Effects -->
@@ -61,50 +62,39 @@
 
     <!-- Main App -->
     <main id="mainApp" class="main-app hidden">
-        <!-- Navigation -->
-        <nav class="main-nav glass-nav" id="mainNav">
-            <div class="nav-brand">
-                <span class="brand-icon">◈</span>
-                <span class="brand-text">StudyFlow</span>
+
+        <!-- Floating Progress Widget (Top-Right) -->
+        <div class="floating-progress" id="floatingProgress">
+            <div class="floating-progress-ring">
+                <svg viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="floatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--accent)"/>
+                            <stop offset="100%" stop-color="var(--accent-light)"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="fp-bg" cx="50" cy="50" r="42"/>
+                    <circle class="fp-fill" id="fpRingFill" cx="50" cy="50" r="42"/>
+                </svg>
+                <span class="fp-percent" id="fpPercent">0%</span>
             </div>
-
-            <div class="nav-right">
-                <!-- Theme Toggle -->
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
-
-                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
-                    <span></span><span></span><span></span>
-                </button>
+            <div class="fp-info">
+                <span class="fp-tasks" id="fpTasks">0 / 0</span>
+                <span class="fp-msg" id="fpMsg">Let's go</span>
             </div>
+        </div>
 
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#welcome" class="nav-link active" data-section="welcome">Today</a></li>
-                <li><a href="#dashboard" class="nav-link" data-section="dashboard">Progress</a></li>
-                <li><a href="#timetable" class="nav-link" data-section="timetable">Timetable</a></li>
-                <li><a href="#testbooks" class="nav-link" data-section="testbooks">Test Books</a></li>
-                <li><a href="#profile" class="nav-link" data-section="profile">Profile</a></li>
-            </ul>
-        </nav>
+        <!-- Theme Toggle (Top-Left) -->
+        <button class="theme-toggle-float" id="themeToggle" aria-label="Toggle theme">
+            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
 
-        <!-- Welcome Section -->
+        <!-- Welcome Section (Minimal) -->
         <section id="welcome" class="section welcome-section">
             <div class="welcome-content">
-                <div class="welcome-text-container">
-                    <h2 class="welcome-name" id="welcomeName">Welcome back.</h2>
-                    <div class="animated-lines">
-                        <p class="anim-line" data-delay="0">Your time.</p>
-                        <p class="anim-line" data-delay="400">Your focus.</p>
-                        <p class="anim-line" data-delay="800">Your progress.</p>
-                    </div>
-                </div>
-                <blockquote class="inspirational-quote">
-                    <span class="quote-mark">"</span>
-                    <p>Success is the sum of small efforts,<br>repeated day in and day out.</p>
-                    <cite>— Robert Collier</cite>
-                </blockquote>
+                <h2 class="welcome-name" id="welcomeName">Welcome back.</h2>
+                <p class="welcome-tagline">Your time. Your focus. Your progress.</p>
             </div>
         </section>
 
@@ -170,63 +160,22 @@
             </div>
         </section>
 
-        <!-- Progress Section -->
-        <section id="progress" class="section progress-section">
-            <div class="progress-container reveal-scale">
-                <h2 class="section-title">Today's Progress</h2>
-                <div class="progress-ring-wrapper">
-                    <svg class="progress-ring" viewBox="0 0 200 200">
-                        <defs>
-                            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="var(--accent)"/>
-                                <stop offset="100%" stop-color="var(--accent-light)"/>
-                            </linearGradient>
-                        </defs>
-                        <circle class="progress-ring-bg" cx="100" cy="100" r="85"/>
-                        <circle class="progress-ring-fill" id="progressRingFill" cx="100" cy="100" r="85"/>
-                    </svg>
-                    <div class="progress-center">
-                        <span class="progress-percent" id="progressPercent">0%</span>
-                        <span class="progress-label" id="progressTasks">0 / 0 Tasks</span>
-                    </div>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-bar-fill" id="progressBarFill"></div>
-                    </div>
-                </div>
-                <p class="progress-message" id="progressMessage">Let's get started.</p>
-            </div>
-        </section>
-
-        <!-- Day Complete Celebration -->
-        <section id="celebration" class="celebration-section hidden">
-            <div class="celebration-content">
-                <div class="celebration-ring"></div>
-                <h2 class="celebration-title">DAY COMPLETE</h2>
-                <p class="celebration-text">You showed up.<br>You did the work.<br>That's what matters.</p>
-                <div class="celebration-particles" id="celebrationParticles"></div>
-            </div>
-        </section>
-
         <!-- Test Books Section with File Upload -->
         <section id="testbooks" class="section testbooks-section">
             <div class="section-header reveal-fade-up">
                 <h2 class="section-title">Test Books</h2>
                 <p class="section-subtitle">Access your study materials on Testbook.com</p>
             </div>
-            
-            <!-- Direct link to Testbook -->
+
             <div class="testbooks-grid" id="testbooksGrid">
                 <a href="https://testbook.com" target="_blank" class="testbook-card glass-card" style="text-decoration: none; cursor: pointer;">
                     <div class="testbook-icon">📚</div>
                     <h3 class="testbook-title">Visit Testbook.com</h3>
                     <p class="testbook-desc">Access all your test series, study materials, and mock tests.</p>
-                    <span class="btn btn-primary" style="display: inline-block;">Go to Testbook</span>
+                    <div class="card-action btn btn-primary">Go to Testbook</div>
                 </a>
             </div>
 
-            <!-- File Upload Section -->
             <div class="file-upload-area reveal-fade-up">
                 <div class="upload-card glass-card">
                     <h3 class="upload-title">Add Test Book</h3>
@@ -260,6 +209,16 @@
             <p>StudyFlow — Built for focus. No data leaves your device.</p>
         </footer>
     </main>
+
+    <!-- Day Complete Celebration -->
+    <section id="celebration" class="celebration-section hidden">
+        <div class="celebration-content">
+            <div class="celebration-ring"></div>
+            <h2 class="celebration-title">DAY COMPLETE</h2>
+            <p class="celebration-text">You showed up.<br>You did the work.<br>That's what matters.</p>
+            <div class="celebration-particles" id="celebrationParticles"></div>
+        </div>
+    </section>
 
     <!-- Back to Top Button -->
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
