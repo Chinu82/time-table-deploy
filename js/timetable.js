@@ -54,13 +54,8 @@ let todayTasks = {};
  * Initialize timetable section
  */
 function initTimetable() {
-    // Load saved tasks for today
     loadTodayTasks();
-
-    // Render initial timetable
     renderTimetable(currentMode);
-
-    // Update progress
     updateProgress();
 }
 
@@ -97,7 +92,6 @@ function renderTimetable(mode) {
     const container = document.getElementById("timelineContainer");
     if (!container) return;
 
-    // Add switching class for transition
     container.classList.add("switching");
 
     setTimeout(() => {
@@ -128,20 +122,16 @@ function renderTimetable(mode) {
                 </div>
             `;
 
-            // Add click handler
             timelineItem.addEventListener("click", () => toggleTask(taskId));
 
             container.appendChild(timelineItem);
 
-            // Observe for scroll animation
             if (window.timelineObserver) {
                 window.timelineObserver.observe(timelineItem);
             }
         });
 
         container.classList.remove("switching");
-
-        // Re-init 3D tilt for new cards
         init3DTilt();
     }, 300);
 }
@@ -158,7 +148,6 @@ function toggleTask(taskId) {
 
     if (isCompleted) {
         item.classList.add("completed", "just-completed");
-        // Remove animation class after it plays
         setTimeout(() => item.classList.remove("just-completed"), 600);
     } else {
         item.classList.remove("completed");
@@ -167,7 +156,6 @@ function toggleTask(taskId) {
     saveTodayTasks();
     updateProgress();
 
-    // Check if all tasks complete
     const schedule = schedules[currentMode];
     const totalTasks = schedule.length;
     const completedCount = Object.values(todayTasks).filter(v => v).length;
@@ -178,7 +166,7 @@ function toggleTask(taskId) {
 }
 
 /**
- * Update progress display
+ * Update progress display with animation
  */
 function updateProgress() {
     const schedule = schedules[currentMode];
@@ -189,15 +177,15 @@ function updateProgress() {
 
     const percentage = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
 
-    // Update ring
+    // Update ring with animation
     const ringFill = document.getElementById("progressRingFill");
     if (ringFill) {
-        const circumference = 2 * Math.PI * 85; // r=85
+        const circumference = 2 * Math.PI * 85;
         const offset = circumference - (percentage / 100) * circumference;
         ringFill.style.strokeDashoffset = offset;
     }
 
-    // Update percent text
+    // Update percent text with animation
     const percentEl = document.getElementById("progressPercent");
     if (percentEl) {
         animateNumber(percentEl, parseInt(percentEl.textContent) || 0, percentage, "%");
@@ -209,7 +197,7 @@ function updateProgress() {
         tasksEl.textContent = `${completedCount} / ${totalTasks} Tasks`;
     }
 
-    // Update bar
+    // Update bar with animation
     const barFill = document.getElementById("progressBarFill");
     if (barFill) {
         barFill.style.width = `${percentage}%`;
@@ -244,7 +232,6 @@ function showDayComplete() {
     celebration.classList.remove("hidden");
     celebrationEffect();
 
-    // Auto-hide after 6 seconds
     setTimeout(() => {
         celebration.classList.add("hidden");
     }, 6000);
@@ -260,7 +247,7 @@ function animateNumber(element, from, to, suffix = "") {
     function update(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(from + (to - from) * eased);
         element.textContent = current + suffix;
 

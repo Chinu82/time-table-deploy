@@ -1,6 +1,6 @@
 /* ==========================================
    STUDYFLOW - MAIN APPLICATION MODULE
-   App initialization, clock, navigation, streak, theme, back-to-top
+   App initialization, clock, navigation, theme, back-to-top
    ========================================== */
 
 /**
@@ -71,7 +71,6 @@ function toggleTheme() {
 
 function updateParticleColors(theme) {
     // Particles will naturally adapt on next frame since they read CSS variables
-    // But we can force a canvas redraw if needed
 }
 
 /* ==========================================
@@ -151,7 +150,7 @@ function updateDateDisplay() {
 }
 
 /* ==========================================
-   NAVIGATION - FIXED SMOOTH SCROLL
+   NAVIGATION
    ========================================== */
 
 function initNavigation() {
@@ -175,7 +174,7 @@ function initNavigation() {
         });
     }
 
-    // SMOOTH SCROLL for all nav links
+    // Smooth scroll for all nav links
     links.forEach(link => {
         link.addEventListener("click", (e) => {
             e.preventDefault();
@@ -238,7 +237,6 @@ function initModeSelector() {
 
     const activeBtn = document.querySelector(".mode-btn.active");
     if (activeBtn) {
-        // Small delay to ensure layout is computed
         requestAnimationFrame(() => updateIndicator(activeBtn));
     }
 
@@ -266,10 +264,6 @@ function initModeSelector() {
 }
 
 /* ==========================================
-   STREAK SYSTEM - REMOVED
-   ========================================== */
-
-/* ==========================================
    PROFILE - SIMPLIFIED
    ========================================== */
 
@@ -284,18 +278,10 @@ function initProfile() {
     if (nameEl) nameEl.textContent = user.name;
     if (goalEl) goalEl.textContent = user.goal || "No goal set";
     if (initialEl) initialEl.textContent = user.name.charAt(0).toUpperCase();
-
-    // Hide stats since we're not storing data permanently
-    const statsGrid = document.querySelector(".stats-grid");
-    if (statsGrid) statsGrid.style.display = "none";
-
-    // Hide reset button
-    const resetBtn = document.getElementById("resetDataBtn");
-    if (resetBtn) resetBtn.style.display = "none";
 }
 
 /* ==========================================
-   IMPROVED MORPHING SECTION - SCROLL ANIMATION FOR WHOLE PAGE
+   MORPHING SECTION
    ========================================== */
 
 function initMorphingSection() {
@@ -329,24 +315,20 @@ function initMorphingSection() {
         const sectionHeight = section.offsetHeight;
         const viewportHeight = window.innerHeight;
 
-        // Calculate progress through the section (0 to 1)
         const scrollProgress = Math.max(0, Math.min(1, 
             (viewportHeight - rect.top) / (sectionHeight + viewportHeight)
         ));
 
-        // Determine active word based on progress with smooth thresholds
         const wordIndex = Math.min(
             words.length - 1,
             Math.floor(scrollProgress * words.length)
         );
 
-        // Only trigger particle burst when word changes
         if (wordIndex !== lastWordIndex && lastWordIndex !== -1) {
             triggerMorphParticles(particlesContainer);
         }
         lastWordIndex = wordIndex;
 
-        // Update words with exit animations
         words.forEach((word, i) => {
             word.classList.remove("active", "exit-left", "exit-right");
 
@@ -359,7 +341,6 @@ function initMorphingSection() {
             }
         });
 
-        // Animate rings with smooth easing
         rings.forEach((ring, i) => {
             const offset = i * 0.08;
             const ringProgress = Math.max(0, Math.min(1, (scrollProgress - offset) * 1.5));
@@ -370,7 +351,6 @@ function initMorphingSection() {
             ring.style.opacity = opacity;
         });
 
-        // Animate glow
         if (glow) {
             const glowScale = 1 + scrollProgress * 0.4;
             const glowOpacity = 0.25 + Math.sin(scrollProgress * Math.PI) * 0.35;
@@ -378,12 +358,10 @@ function initMorphingSection() {
             glow.style.opacity = glowOpacity;
         }
 
-        // Update progress bar
         if (progressFill) {
             progressFill.style.width = `${scrollProgress * 100}%`;
         }
 
-        // Animate particles
         if (particlesContainer) {
             const particles = particlesContainer.querySelectorAll(".morph-particle");
             particles.forEach((p, i) => {
@@ -404,7 +382,6 @@ function initMorphingSection() {
 function triggerMorphParticles(container) {
     if (!container) return;
 
-    // Create burst particles
     for (let i = 0; i < 12; i++) {
         const p = document.createElement("div");
         p.className = "morph-particle";
@@ -432,7 +409,7 @@ function triggerMorphParticles(container) {
 }
 
 /* ==========================================
-   SCROLL ANIMATIONS - ENHANCED FOR WHOLE PAGE
+   SCROLL ANIMATIONS
    ========================================== */
 
 function initScrollAnimations() {
@@ -467,7 +444,6 @@ function initScrollAnimations() {
 
     revealElements.forEach(el => observer.observe(el));
 
-    // Timeline observer
     window.timelineObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
