@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<base target="_blank">
+    <base target="_blank">
 </head>
 <body>
     <!-- Background Effects -->
@@ -90,7 +90,7 @@
             </ul>
         </nav>
 
-        <!-- Welcome Section -->
+        <!-- Welcome Section - Removed scroll indicator -->
         <section id="welcome" class="section welcome-section">
             <div class="welcome-content">
                 <div class="welcome-text-container">
@@ -106,10 +106,6 @@
                     <p>Success is the sum of small efforts,<br>repeated day in and day out.</p>
                     <cite>— Robert Collier</cite>
                 </blockquote>
-            </div>
-            <div class="scroll-indicator">
-                <span>Scroll to begin</span>
-                <div class="scroll-arrow"></div>
             </div>
         </section>
 
@@ -175,7 +171,7 @@
             </div>
         </section>
 
-        <!-- Progress Section -->
+        <!-- Progress Section with Animation -->
         <section id="progress" class="section progress-section">
             <div class="progress-container reveal-scale">
                 <h2 class="section-title">Today's Progress</h2>
@@ -218,46 +214,18 @@
         <section id="testbooks" class="section testbooks-section">
             <div class="section-header reveal-fade-up">
                 <h2 class="section-title">Test Books</h2>
-                <p class="section-subtitle">Your study materials and resources</p>
+                <p class="section-subtitle">Access your study materials on Testbook.com</p>
             </div>
             <div class="testbooks-grid" id="testbooksGrid">
-                <article class="testbook-card glass-card tilt-card" data-category="java">
-                    <div class="testbook-icon">☕</div>
-                    <h3 class="testbook-title">Java</h3>
-                    <p class="testbook-desc">Practice Java concepts and interview questions.</p>
-                    <button class="btn btn-secondary testbook-open">Open</button>
-                </article>
-                <article class="testbook-card glass-card tilt-card" data-category="spring">
-                    <div class="testbook-icon">🌱</div>
-                    <h3 class="testbook-title">Spring Boot</h3>
-                    <p class="testbook-desc">Framework fundamentals and advanced patterns.</p>
-                    <button class="btn btn-secondary testbook-open">Open</button>
-                </article>
-                <article class="testbook-card glass-card tilt-card" data-category="sql">
-                    <div class="testbook-icon">🗄️</div>
-                    <h3 class="testbook-title">SQL</h3>
-                    <p class="testbook-desc">Database queries, optimization, and design.</p>
-                    <button class="btn btn-secondary testbook-open">Open</button>
-                </article>
-                <article class="testbook-card glass-card tilt-card" data-category="react">
-                    <div class="testbook-icon">⚛️</div>
-                    <h3 class="testbook-title">React</h3>
-                    <p class="testbook-desc">Component architecture and hooks deep dive.</p>
-                    <button class="btn btn-secondary testbook-open">Open</button>
-                </article>
-                <article class="testbook-card glass-card tilt-card" data-category="aptitude">
-                    <div class="testbook-icon">🧮</div>
-                    <h3 class="testbook-title">Aptitude</h3>
-                    <p class="testbook-desc">Logical reasoning and quantitative practice.</p>
-                    <button class="btn btn-secondary testbook-open">Open</button>
-                </article>
-                <article class="testbook-card glass-card tilt-card" data-category="mock">
-                    <div class="testbook-icon">📝</div>
-                    <h3 class="testbook-title">Mock Tests</h3>
-                    <p class="testbook-desc">Full-length simulated assessments.</p>
-                    <button class="btn btn-secondary testbook-open">Open</button>
-                </article>
+                <a href="https://testbook.com" target="_blank" class="testbook-card glass-card" style="text-decoration: none; cursor: pointer;">
+                    <div class="testbook-icon">📚</div>
+                    <h3 class="testbook-title">Visit Testbook.com</h3>
+                    <p class="testbook-desc">Access all your test series, study materials, and mock tests.</p>
+                    <span class="btn btn-primary" style="display: inline-block;">Go to Testbook</span>
+                </a>
             </div>
+            
+            <!-- File Upload Section -->
             <div class="file-upload-area reveal-fade-up">
                 <div class="upload-card glass-card">
                     <h3 class="upload-title">Add Test Book</h3>
@@ -271,7 +239,7 @@
             </div>
         </section>
 
-        <!-- Profile Section -->
+        <!-- Profile Section - Simplified -->
         <section id="profile" class="section profile-section">
             <div class="profile-card glass-card reveal-scale">
                 <div class="profile-header">
@@ -283,25 +251,6 @@
                         <p class="profile-goal" id="profileGoal">No goal set</p>
                     </div>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-value" id="statStreak">0</span>
-                        <span class="stat-label">Day Streak</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="statTasks">0</span>
-                        <span class="stat-label">Tasks Done</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="statDays">0</span>
-                        <span class="stat-label">Study Days</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="statCompletion">0%</span>
-                        <span class="stat-label">Avg. Completion</span>
-                    </div>
-                </div>
-                <button id="resetDataBtn" class="btn btn-danger btn-small">Reset All Data</button>
             </div>
         </section>
 

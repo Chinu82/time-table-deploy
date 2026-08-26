@@ -166,7 +166,6 @@ function toggleTask(taskId) {
 
     saveTodayTasks();
     updateProgress();
-    updateProfileStats();
 
     // Check if all tasks complete
     const schedule = schedules[currentMode];

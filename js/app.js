@@ -266,99 +266,11 @@ function initModeSelector() {
 }
 
 /* ==========================================
-   STREAK SYSTEM
+   STREAK SYSTEM - REMOVED
    ========================================== */
 
-function updateStreak() {
-    const today = new Date().toISOString().split("T")[0];
-    const streakData = Storage.get(STORAGE_KEYS.STREAK, {
-        currentStreak: 0,
-        lastActiveDate: null,
-        totalDays: 0,
-        totalTasksCompleted: 0
-    });
-
-    if (!streakData.lastActiveDate) {
-        streakData.currentStreak = 1;
-        streakData.totalDays = 1;
-    } else if (streakData.lastActiveDate === today) {
-        return streakData;
-    } else {
-        const lastDate = new Date(streakData.lastActiveDate);
-        const todayDate = new Date(today);
-        const diffTime = todayDate - lastDate;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 1) {
-            streakData.currentStreak += 1;
-            streakData.totalDays += 1;
-        } else if (diffDays > 1) {
-            streakData.currentStreak = 1;
-            streakData.totalDays += 1;
-        }
-    }
-
-    streakData.lastActiveDate = today;
-    Storage.save(STORAGE_KEYS.STREAK, streakData);
-    return streakData;
-}
-
-function initStreakDisplay() {
-    const streakData = Storage.get(STORAGE_KEYS.STREAK, {
-        currentStreak: 0,
-        totalDays: 0,
-        totalTasksCompleted: 0
-    });
-
-    updateStreakUI(streakData);
-}
-
-function updateStreakUI(streakData) {
-    const streakEl = document.getElementById("statStreak");
-    const daysEl = document.getElementById("statDays");
-    const tasksEl = document.getElementById("statTasks");
-
-    if (streakEl) streakEl.textContent = streakData.currentStreak || 0;
-    if (daysEl) daysEl.textContent = streakData.totalDays || 0;
-    if (tasksEl) tasksEl.textContent = streakData.totalTasksCompleted || 0;
-}
-
-function updateProfileStats() {
-    const streakData = Storage.get(STORAGE_KEYS.STREAK, {
-        currentStreak: 0,
-        totalDays: 0,
-        totalTasksCompleted: 0
-    });
-
-    const allTasks = Storage.get(STORAGE_KEYS.TASKS, {});
-    let totalCompleted = 0;
-    let totalTasks = 0;
-
-    Object.values(allTasks).forEach(dayTasks => {
-        Object.values(dayTasks).forEach(completed => {
-            totalTasks++;
-            if (completed) totalCompleted++;
-        });
-    });
-
-    streakData.totalTasksCompleted = totalCompleted;
-    Storage.save(STORAGE_KEYS.STREAK, streakData);
-
-    const tasksEl = document.getElementById("statTasks");
-    if (tasksEl) tasksEl.textContent = totalCompleted;
-
-    const avgEl = document.getElementById("statCompletion");
-    if (avgEl) {
-        const daysWithTasks = Object.keys(allTasks).length;
-        const avg = daysWithTasks > 0 && totalTasks > 0
-            ? Math.round((totalCompleted / totalTasks) * 100) 
-            : 0;
-        avgEl.textContent = `${avg}%`;
-    }
-}
-
 /* ==========================================
-   PROFILE
+   PROFILE - SIMPLIFIED
    ========================================== */
 
 function initProfile() {
@@ -373,24 +285,17 @@ function initProfile() {
     if (goalEl) goalEl.textContent = user.goal || "No goal set";
     if (initialEl) initialEl.textContent = user.name.charAt(0).toUpperCase();
 
-    updateProfileStats();
-    initStreakDisplay();
+    // Hide stats since we're not storing data permanently
+    const statsGrid = document.querySelector(".stats-grid");
+    if (statsGrid) statsGrid.style.display = "none";
 
+    // Hide reset button
     const resetBtn = document.getElementById("resetDataBtn");
-    if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-            if (confirm("Are you sure? This will erase all your data including tasks, streak, and files.")) {
-                Storage.clear();
-                indexedDB.deleteDatabase(DB_NAME).catch(console.error);
-                localStorage.removeItem(THEME_KEY);
-                location.reload();
-            }
-        });
-    }
+    if (resetBtn) resetBtn.style.display = "none";
 }
 
 /* ==========================================
-   IMPROVED MORPHING SECTION
+   IMPROVED MORPHING SECTION - SCROLL ANIMATION FOR WHOLE PAGE
    ========================================== */
 
 function initMorphingSection() {
@@ -527,7 +432,7 @@ function triggerMorphParticles(container) {
 }
 
 /* ==========================================
-   SCROLL ANIMATIONS - ENHANCED
+   SCROLL ANIMATIONS - ENHANCED FOR WHOLE PAGE
    ========================================== */
 
 function initScrollAnimations() {

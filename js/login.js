@@ -81,7 +81,6 @@ function handleLogin(e) {
     };
 
     Storage.save(STORAGE_KEYS.USER, currentUser);
-    updateStreak();
     animateLoginExit();
 }
 
@@ -108,7 +107,6 @@ function animateLoginExit() {
         initProgress();
         initFileManager();
         initProfile();
-        initStreakDisplay();
 
         // Trigger welcome animations
         setTimeout(() => {
@@ -125,12 +123,21 @@ function animateLoginExit() {
 }
 
 /**
- * Update welcome section with user name
+ * Update welcome section with time-based greeting
  */
 function updateWelcomeUI() {
     const welcomeName = document.getElementById("welcomeName");
     if (welcomeName && currentUser) {
-        welcomeName.textContent = `Welcome back, ${currentUser.name}.`;
+        const hour = new Date().getHours();
+        let greeting = "Good Evening";
+        
+        if (hour < 12) {
+            greeting = "Good Morning";
+        } else if (hour < 17) {
+            greeting = "Good Afternoon";
+        }
+        
+        welcomeName.textContent = `${greeting}, ${currentUser.name}.`;
     }
 }
 
