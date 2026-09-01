@@ -1,312 +1,543 @@
 /* ==========================================
    STUDYFLOW - TIMETABLE MODULE
-   Your actual exam prep schedule
+   ========================================== */
+
+/* ==========================================
+   CONFIGURATION
+   ========================================== */
+
+// Timetable day continues until 4:00 AM.
+const DAY_RESET_HOUR = 4;
+
+// Check the clock every 30 seconds so future tasks automatically become available.
+const TIME_REFRESH_INTERVAL = 30 * 1000;
+
+
+/* ==========================================
+   SCHEDULES (your existing schedules)
    ========================================== */
 
 const schedules = {
-    REMOTE: [
-        { time: "05:30", title: "Wake Up, Freshen Up, Hydrate", category: "routine" },
-        { time: "06:00", title: "Study Slot 1 — Reasoning (Puzzles / Syllogism / Direction)", category: "reasoning" },
-        { time: "07:15", title: "Break — Walk / Stretch", category: "break" },
-        { time: "07:25", title: "Breakfast", category: "break" },
-        { time: "07:45", title: "Study Slot 2 — English Grammar + Cloze Test", category: "english" },
-        { time: "09:00", title: "Break", category: "break" },
-        { time: "09:10", title: "Study Slot 3 — GK/GS Deep Dive (History / Polity / Geography)", category: "gkgs" },
-        { time: "10:25", title: "Break", category: "break" },
-        { time: "10:35", title: "Study Slot 4 — English Vocab / Idioms", category: "english" },
-        { time: "11:00", title: "Work Hours", category: "work" },
-        { time: "20:00", title: "Freshen Up / Unwind", category: "routine" },
-        { time: "20:30", title: "Dinner", category: "break" },
-        { time: "21:00", title: "Study Slot 5 — Quant / Aptitude (Arithmetic / Algebra)", category: "quant" },
-        { time: "22:15", title: "Break", category: "break" },
-        { time: "22:25", title: "Study Slot 6 — English RC Passage", category: "english" },
-        { time: "22:50", title: "Wind Down — Pack notes, no screens", category: "routine" },
-        { time: "23:00", title: "💤 Lights Off", category: "routine" }
-    ],
 
-    WFO: [
-        { time: "05:30", title: "Wake Up, Freshen Up", category: "routine" },
-        { time: "06:00", title: "Study Slot 1 — Quant / Aptitude (20 Easy + 10 Medium MCQs)", category: "quant" },
-        { time: "07:15", title: "Break", category: "break" },
-        { time: "07:25", title: "Breakfast", category: "break" },
-        { time: "07:45", title: "Study Slot 2 — English Grammar + Para Jumbles", category: "english" },
-        { time: "09:00", title: "Break", category: "break" },
-        { time: "09:10", title: "Study Slot 3 — GK/GS Static Quick Revision", category: "gkgs" },
-        { time: "10:25", title: "Quick Get Ready", category: "routine" },
-        { time: "10:30", title: "🚗 Commute — GK Podcasts / Current Affairs Audio", category: "commute" },
-        { time: "11:00", title: "Work Hours", category: "work" },
-        { time: "20:00", title: "🚗 Commute Back — Flashcards on Phone", category: "commute" },
-        { time: "20:30", title: "Dinner", category: "break" },
-        { time: "21:00", title: "Study Slot 4 — Reasoning (Non-verbal / Missing Numbers)", category: "reasoning" },
-        { time: "22:15", title: "Break", category: "break" },
-        { time: "22:25", title: "Study Slot 5 — English Vocab Booster (Root Words)", category: "english" },
-        { time: "22:50", title: "Wind Down — Prep for tomorrow", category: "routine" },
-        { time: "23:00", title: "💤 Lights Off", category: "routine" }
-    ],
+  REMOTE: [
+    { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
+    { time: "09:00", title: "🍳 Breakfast", category: "routine" },
+    { time: "09:30", title: "💡 Light Revision — English Vocab / GK / Current Affairs", category: "english" },
+    { time: "10:15", title: "🧘 Short Break & Get Ready for Work", category: "routine" },
+    { time: "11:00", title: "💼 Work Start", category: "work" },
+    { time: "13:00", title: "🍱 Lunch Break", category: "routine" },
+    { time: "20:00", title: "💼 Work End", category: "work" },
+    { time: "20:15", title: "🍽️ Dinner & Relax", category: "routine" },
+    { time: "20:45", title: "📘 Session 1 — Reasoning (Puzzles / Syllogism / Direction)", category: "reasoning" },
+    { time: "22:00", title: "☕ Short Break", category: "break" },
+    { time: "22:15", title: "📗 Session 2 — English Grammar / Cloze Test / Vocab", category: "english" },
+    { time: "23:30", title: "☕ Short Break", category: "break" },
+    { time: "23:45", title: "📙 Session 3 — Quant (Arithmetic / Algebra / DI)", category: "quant" },
+    { time: "00:45", title: "🌙 Wind Down — Light Revision / Plan Tomorrow", category: "routine" },
+    { time: "01:00", title: "💤 Sleep", category: "routine" }
+  ],
 
-    HOLIDAY: [
-        { time: "06:30", title: "Study Slot 1 — English (Full Grammar + 1 RC Set)", category: "english" },
-        { time: "07:45", title: "Break + Breakfast", category: "break" },
-        { time: "08:30", title: "Study Slot 2 — Reasoning (High-level Puzzles / Input-Output)", category: "reasoning" },
-        { time: "09:45", title: "Break", category: "break" },
-        { time: "10:00", title: "Study Slot 3 — GK/GS Deep Dive (Art & Culture / Environment)", category: "gkgs" },
-        { time: "11:15", title: "Break", category: "break" },
-        { time: "11:30", title: "Study Slot 4 — Quant Hard (Trigonometry / Algebra)", category: "quant" },
-        { time: "12:45", title: "🧐 Doubt Session 1 — Mock Test Mistake Analysis", category: "doubt" },
-        { time: "14:45", title: "Lunch / Rest Break", category: "break" },
-        { time: "15:30", title: "Study Slot 5 — English (Vocab + Spelling Checks)", category: "english" },
-        { time: "16:45", title: "🧐 Doubt Session 2 — 50 PYQs GK & Quant", category: "doubt" },
-        { time: "18:45", title: "Evening Tea Break", category: "break" },
-        { time: "19:00", title: "Study Slot 6 — Reasoning / Quant (Weak Areas)", category: "quant" },
-        { time: "20:15", title: "Break + Dinner", category: "break" },
-        { time: "20:45", title: "Study Slot 7 — GK/GS Rapid Fire Current Affairs", category: "gkgs" },
-        { time: "21:30", title: "Buffer / Extra Study", category: "study" },
-        { time: "22:15", title: "Wind Down — Relax, light news", category: "routine" },
-        { time: "23:00", title: "💤 Lights Off", category: "routine" }
-    ]
+  WFO: [
+    { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
+    { time: "09:00", title: "🍳 Breakfast", category: "routine" },
+    { time: "09:30", title: "💡 Quick Revision — GK / Current Affairs / Flashcards", category: "gkgs" },
+    { time: "10:00", title: "👔 Get Ready for Office", category: "routine" },
+    { time: "10:30", title: "🚗 Commute to Office", category: "commute" },
+    { time: "11:00", title: "💼 Work Start", category: "work" },
+    { time: "20:00", title: "💼 Work End", category: "work" },
+    { time: "20:15", title: "🚗 Commute Back — Audio Notes / Relax", category: "commute" },
+    { time: "21:00", title: "🍽️ Dinner & Freshen Up", category: "routine" },
+    { time: "21:30", title: "📘 Session 1 — Reasoning (Non-Verbal / Missing Numbers / Puzzles)", category: "reasoning" },
+    { time: "22:45", title: "☕ Short Break", category: "break" },
+    { time: "23:00", title: "📗 Session 2 — English (Grammar / Para Jumbles / Sentence Correction)", category: "english" },
+    { time: "00:15", title: "☕ Short Break", category: "break" },
+    { time: "00:30", title: "📙 Session 3 — Quant (Arithmetic / Algebra / Trigonometry)", category: "quant" },
+    { time: "01:30", title: "🌙 Wind Down — Plan Tomorrow", category: "routine" },
+    { time: "01:45", title: "💤 Sleep", category: "routine" }
+  ],
+
+  HOLIDAY: [
+    { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
+    { time: "09:00", title: "🍳 Breakfast", category: "routine" },
+    { time: "09:30", title: "📘 Session 1 — Reasoning (High-Level Puzzles / Input-Output)", category: "reasoning" },
+    { time: "10:45", title: "☕ Short Break", category: "break" },
+    { time: "11:00", title: "📗 Session 2 — English (RC Passage / Grammar / Vocab)", category: "english" },
+    { time: "12:15", title: "☕ Short Break", category: "break" },
+    { time: "12:30", title: "📙 Session 3 — Quant (Arithmetic / Algebra)", category: "quant" },
+    { time: "13:45", title: "🍱 Lunch & Relax", category: "routine" },
+    { time: "14:30", title: "😌 Rest / Personal Time", category: "routine" },
+    { time: "15:30", title: "📕 Session 4 — GK/GS (History / Geography / Polity / Science)", category: "gkgs" },
+    { time: "16:45", title: "☕ Short Break", category: "break" },
+    { time: "17:00", title: "🧐 Mock Test / PYQ / Doubt Analysis", category: "doubt" },
+    { time: "18:15", title: "🚶 Evening Walk / Relax", category: "routine" },
+    { time: "19:00", title: "🍽️ Dinner", category: "routine" },
+    { time: "19:45", title: "📗 Session 5 — English (Spelling / Fillers / Revision)", category: "english" },
+    { time: "21:00", title: "☕ Short Break", category: "break" },
+    { time: "21:15", title: "📘 Session 6 — Reasoning (Puzzles / Data Sufficiency)", category: "reasoning" },
+    { time: "22:30", title: "☕ Short Break", category: "break" },
+    { time: "22:45", title: "📙 Session 7 — Quant (DI / Miscellaneous / Weak Topics)", category: "quant" },
+    { time: "00:00", title: "🌙 Wind Down — Light Revision / Plan Tomorrow", category: "routine" },
+    { time: "00:30", title: "💤 Sleep", category: "routine" }
+  ]
 };
+
+
+/* ==========================================
+   STATE
+   ========================================== */
 
 let currentMode = "REMOTE";
 let todayTasks = {};
+let timetableRefreshTimer = null;
 
-/**
- * Initialize timetable section
- */
+
+/* ==========================================
+   INITIALIZATION
+   ========================================== */
+
 function initTimetable() {
-    loadTodayTasks();
-    renderTimetable(currentMode);
-    updateProgress();
+  loadTodayTasks();
+  renderTimetable(currentMode);
+  updateProgress();
+  startTimetableClock();
 }
 
-/**
- * Get today's date string for storage keys (LOCAL time, not UTC)
- */
+
+/* ==========================================
+   GET STUDY DATE (respects 4 AM reset)
+   ========================================== */
+
+function getStudyDate() {
+  const now = new Date();
+  const studyDate = new Date(now);
+  if (now.getHours() < DAY_RESET_HOUR) {
+    studyDate.setDate(studyDate.getDate() - 1);
+  }
+  return studyDate;
+}
+
 function getTodayKey() {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const d = getStudyDate();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
-/**
- * Load today's completed tasks from storage
- */
+
+/* ==========================================
+   LOAD / SAVE TODAY TASKS
+   ========================================== */
+
 function loadTodayTasks() {
-    const todayKey = getTodayKey();
-    const allTasks = Storage.get(STORAGE_KEYS.TASKS, {});
-    todayTasks = allTasks[todayKey] || {};
+  const todayKey = getTodayKey();
+  const allTasks = Storage.get(STORAGE_KEYS.TASKS, {});
+  todayTasks = allTasks[todayKey] || {};
 }
 
-/**
- * Save today's completed tasks to storage
- */
 function saveTodayTasks() {
-    const todayKey = getTodayKey();
-    const allTasks = Storage.get(STORAGE_KEYS.TASKS, {});
-    allTasks[todayKey] = todayTasks;
-    Storage.save(STORAGE_KEYS.TASKS, allTasks);
+  const todayKey = getTodayKey();
+  const allTasks = Storage.get(STORAGE_KEYS.TASKS, {});
+  allTasks[todayKey] = todayTasks;
+  Storage.save(STORAGE_KEYS.TASKS, allTasks);
 }
 
-/**
- * Render timetable for given mode
- */
+
+/* ==========================================
+   TIME HELPERS (4 AM offset)
+   ========================================== */
+
+function getCurrentStudyMinutes() {
+  const now = new Date();
+  let minutes = now.getHours() * 60 + now.getMinutes();
+  if (now.getHours() < DAY_RESET_HOUR) {
+    minutes += 24 * 60;
+  }
+  return minutes;
+}
+
+function getTaskStudyMinutes(time24) {
+  const [hours, minutes] = time24.split(":").map(Number);
+  let totalMinutes = hours * 60 + minutes;
+  if (hours < DAY_RESET_HOUR) {
+    totalMinutes += 24 * 60;
+  }
+  return totalMinutes;
+}
+
+function canCompleteTask(taskTime) {
+  return getCurrentStudyMinutes() >= getTaskStudyMinutes(taskTime);
+}
+
+function getMinutesUntilTask(taskTime) {
+  return Math.max(getTaskStudyMinutes(taskTime) - getCurrentStudyMinutes(), 0);
+}
+
+function formatWaitTime(minutes) {
+  if (minutes <= 0) return "";
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (mins === 0) return `${hours} hr`;
+  return `${hours} hr ${mins} min`;
+}
+
+
+/* ==========================================
+   RENDER TIMETABLE
+   ========================================== */
+
 function renderTimetable(mode) {
-    const container = document.getElementById("timelineContainer");
-    if (!container) return;
+  const container = document.getElementById("timelineContainer");
+  if (!container) return;
 
-    container.classList.add("switching");
+  currentMode = mode;
 
-    setTimeout(() => {
-        const schedule = schedules[mode] || schedules.REMOTE;
-        container.innerHTML = "";
+  container.classList.add("switching");
 
-        schedule.forEach((item, index) => {
-            const taskId = `${mode}_${index}`;
-            const isCompleted = todayTasks[taskId] === true;
+  setTimeout(() => {
+    const schedule = schedules[mode] || schedules.REMOTE;
+    container.innerHTML = "";
 
-            const timelineItem = document.createElement("div");
-            timelineItem.className = `timeline-item ${isCompleted ? "completed" : ""}`;
-            timelineItem.dataset.taskId = taskId;
+    schedule.forEach((item, index) => {
+      const taskId = `${mode}_${index}`;
+      const isCompleted = todayTasks[taskId] === true;
+      const isAvailable = canCompleteTask(item.time);
+      const minutesUntil = getMinutesUntilTask(item.time);
 
-            const timeFormatted = formatTime(item.time);
+      const timelineItem = document.createElement("div");
+      timelineItem.className = [
+        "timeline-item",
+        isCompleted ? "completed" : "",
+        !isAvailable ? "locked" : ""
+      ].filter(Boolean).join(" ");
+      timelineItem.dataset.taskId = taskId;
+      timelineItem.dataset.taskTime = item.time;
+      timelineItem.dataset.available = String(isAvailable);
 
-            timelineItem.innerHTML = `
-                <div class="timeline-dot"></div>
-                <div class="timeline-card glass-card">
-                    <div class="timeline-time">${timeFormatted}</div>
-                    <h4 class="timeline-title">${escapeHtml(item.title)}</h4>
-                    <span class="timeline-category">${item.category}</span>
-                    <div class="timeline-check">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M5 12l5 5L20 7"/>
-                        </svg>
-                    </div>
-                </div>
-            `;
+      const timeFormatted = formatTime(item.time);
 
-            timelineItem.addEventListener("click", () => toggleTask(taskId));
+      // Status HTML
+      let statusHtml = "";
+      if (isCompleted) {
+        statusHtml = `<div class="timeline-status completed-status">✓ Completed</div>`;
+      } else if (!isAvailable) {
+        statusHtml = `
+          <div class="timeline-status locked-status">
+            🔒 Available at ${timeFormatted}
+            <span class="unlock-countdown">(${formatWaitTime(minutesUntil)})</span>
+          </div>
+        `;
+      } else {
+        statusHtml = `<div class="timeline-status available-status">✓ Available now</div>`;
+      }
 
-            container.appendChild(timelineItem);
-
-            if (window.timelineObserver) {
-                window.timelineObserver.observe(timelineItem);
+      // Card HTML
+      timelineItem.innerHTML = `
+        <div class="timeline-dot"></div>
+        <div class="timeline-card glass-card">
+          <div class="timeline-time">${timeFormatted}</div>
+          <h4 class="timeline-title">${escapeHtml(item.title)}</h4>
+          <span class="timeline-category">${escapeHtml(item.category)}</span>
+          ${statusHtml}
+          <div class="timeline-check">
+            ${!isAvailable && !isCompleted
+              ? `<span class="task-lock-icon">🔒</span>`
+              : `<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>`
             }
-        });
+          </div>
+        </div>
+      `;
 
-        container.classList.remove("switching");
-        init3DTilt();
-    }, 300);
+      timelineItem.addEventListener("click", () => toggleTask(taskId));
+
+      container.appendChild(timelineItem);
+
+      if (window.timelineObserver) {
+        window.timelineObserver.observe(timelineItem);
+      }
+    });
+
+    container.classList.remove("switching");
+    if (typeof init3DTilt === "function") init3DTilt();
+  }, 300);
 }
 
-/**
- * Toggle task completion status
- */
+
+/* ==========================================
+   TOGGLE TASK (no full re‑render)
+   ========================================== */
+
 function toggleTask(taskId) {
-    const item = document.querySelector(`[data-task-id="${taskId}"]`);
-    if (!item) return;
+  const schedule = schedules[currentMode];
+  if (!schedule) return;
 
-    const isCompleted = !todayTasks[taskId];
-    todayTasks[taskId] = isCompleted;
+  const lastUnderscore = taskId.lastIndexOf("_");
+  const taskIndex = Number(taskId.substring(lastUnderscore + 1));
+  const task = schedule[taskIndex];
+  if (!task) return;
 
-    if (isCompleted) {
-        item.classList.add("completed", "just-completed");
-        setTimeout(() => item.classList.remove("just-completed"), 600);
+  const item = document.querySelector(`[data-task-id="${taskId}"]`);
+  if (!item) return;
+
+  // Prevent clicking locked tasks
+  if (!canCompleteTask(task.time)) {
+    showTaskLockedMessage(task);
+    item.classList.add("locked-click");
+    setTimeout(() => item.classList.remove("locked-click"), 500);
+    return;
+  }
+
+  const isCompleted = todayTasks[taskId] === true;
+  const newCompleted = !isCompleted;
+  todayTasks[taskId] = newCompleted;
+
+  // Update only this card
+  if (newCompleted) {
+    item.classList.add("completed", "just-completed");
+    setTimeout(() => item.classList.remove("just-completed"), 600);
+  } else {
+    item.classList.remove("completed");
+  }
+
+  // Update status element
+  const statusEl = item.querySelector(".timeline-status");
+  if (statusEl) {
+    if (newCompleted) {
+      statusEl.className = "timeline-status completed-status";
+      statusEl.innerHTML = "✓ Completed";
     } else {
-        item.classList.remove("completed");
+      statusEl.className = "timeline-status available-status";
+      statusEl.innerHTML = "✓ Available now";
     }
+  }
 
-    saveTodayTasks();
-    updateProgress();
+  // Update check icon
+  const checkEl = item.querySelector(".timeline-check");
+  if (checkEl) {
+    checkEl.innerHTML = `<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>`;
+  }
 
-    const schedule = schedules[currentMode];
-    const totalTasks = schedule.length;
-    const completedCount = Object.values(todayTasks).filter(v => v).length;
+  saveTodayTasks();
+  updateProgress();
 
-    if (completedCount === totalTasks && totalTasks > 0) {
-        setTimeout(() => showDayComplete(), 800);
-    }
+  // Check day completion
+  const totalTasks = schedule.length;
+  const completedCount = Object.keys(todayTasks)
+    .filter(key => key.startsWith(currentMode + "_") && todayTasks[key] === true)
+    .length;
+
+  if (completedCount === totalTasks && totalTasks > 0) {
+    setTimeout(showDayComplete, 800);
+  }
 }
 
-/**
- * Update progress display with cinematic animation
- * Also updates the floating progress widget
- */
-function updateProgress() {
-    const schedule = schedules[currentMode];
-    const totalTasks = schedule.length;
-    const completedCount = Object.keys(todayTasks).filter(key => 
-        key.startsWith(currentMode + "_") && todayTasks[key]
-    ).length;
 
-    const percentage = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+/* ==========================================
+   LOCKED TASK MESSAGE (toast)
+   ========================================== */
 
-    // Update floating progress widget
-    updateFloatingProgress(percentage, completedCount, totalTasks);
+function showTaskLockedMessage(task) {
+  const formattedTime = formatTime(task.time);
+  const minutes = getMinutesUntilTask(task.time);
+  const waitTime = formatWaitTime(minutes);
+  const msg = `🔒 Available at ${formattedTime}${waitTime ? ` — ${waitTime} remaining` : ""}`;
 
-    // Update message with crossfade
-    const messageEl = document.getElementById("progressMessage");
-    if (messageEl) {
-        const newMessage = getCompletionMessage(percentage);
-        if (messageEl.textContent !== newMessage) {
-            messageEl.classList.add("fade-out");
-            setTimeout(() => {
-                messageEl.textContent = newMessage;
-                messageEl.classList.remove("fade-out");
-                messageEl.classList.add("fade-in");
-                setTimeout(() => messageEl.classList.remove("fade-in"), 400);
-            }, 400);
-        }
-    }
-}
-
-/**
- * Update the floating progress widget in top-right corner
- */
-function updateFloatingProgress(percentage, completed, total) {
-    const ringFill = document.getElementById("fpRingFill");
-    const percentEl = document.getElementById("fpPercent");
-    const tasksEl = document.getElementById("fpTasks");
-    const msgEl = document.getElementById("fpMsg");
-
-    if (ringFill) {
-        const circumference = 2 * Math.PI * 42;
-        const offset = circumference - (percentage / 100) * circumference;
-        ringFill.style.strokeDashoffset = offset;
-    }
-
-    if (percentEl) {
-        percentEl.textContent = percentage + "%";
-    }
-
-    if (tasksEl) {
-        tasksEl.textContent = `${completed} / ${total}`;
-    }
-
-    if (msgEl) {
-        msgEl.textContent = getCompletionMessage(percentage);
-    }
-}
-
-/**
- * Get motivational message based on progress
- */
-function getCompletionMessage(percentage) {
-    if (percentage === 0) return "Let's go";
-    if (percentage < 30) return "Keep going";
-    if (percentage < 50) return "Building momentum";
-    if (percentage < 70) return "Doing great";
-    if (percentage < 100) return "Almost there";
-    return "Day complete! 🔥";
-}
-
-/**
- * Show day completion celebration
- */
-function showDayComplete() {
-    const celebration = document.getElementById("celebration");
-    if (!celebration) return;
-
-    celebration.classList.remove("hidden");
-    celebrationEffect();
+  // Use a simple toast if available, else console
+  if (typeof showToast === "function") {
+    showToast(msg);
+  } else {
+    // Create a temporary toast element
+    const toast = document.createElement("div");
+    toast.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px;
+      border-radius: 8px; font-size: 0.95rem; z-index: 9999;
+      backdrop-filter: blur(8px); border: 1px solid var(--glass-border);
+      transition: opacity 0.3s ease; font-family: var(--font-main);
+    `;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
 
     setTimeout(() => {
-        celebration.classList.add("hidden");
-    }, 6000);
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
 }
 
-/**
- * Format time from 24h to 12h with AM/PM
- */
+
+/* ==========================================
+   UPDATE PROGRESS (uses your existing elements)
+   ========================================== */
+
+function updateProgress() {
+  const schedule = schedules[currentMode];
+  if (!schedule) return;
+
+  const totalTasks = schedule.length;
+  const completedCount = Object.keys(todayTasks)
+    .filter(key => key.startsWith(currentMode + "_") && todayTasks[key] === true)
+    .length;
+
+  const percentage = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+
+  // Update ring
+  const ringFill = document.getElementById("progressRingFill");
+  if (ringFill) {
+    const circumference = 2 * Math.PI * 85;
+    const offset = circumference - (percentage / 100) * circumference;
+    ringFill.style.strokeDashoffset = offset;
+  }
+
+  // Update percent
+  const percentEl = document.getElementById("progressPercent");
+  if (percentEl) {
+    percentEl.textContent = percentage + "%";
+  }
+
+  // Update tasks label
+  const tasksEl = document.getElementById("progressTasks");
+  if (tasksEl) {
+    tasksEl.textContent = `${completedCount} / ${totalTasks} Tasks`;
+  }
+
+  // Update bar
+  const barFill = document.getElementById("progressBarFill");
+  if (barFill) {
+    barFill.style.width = percentage + "%";
+  }
+
+  // Update message with crossfade
+  const messageEl = document.getElementById("progressMessage");
+  if (messageEl) {
+    const newMessage = getCompletionMessage(percentage);
+    if (messageEl.textContent !== newMessage) {
+      messageEl.classList.add("fade-out");
+      setTimeout(() => {
+        messageEl.textContent = newMessage;
+        messageEl.classList.remove("fade-out");
+        messageEl.classList.add("fade-in");
+        setTimeout(() => messageEl.classList.remove("fade-in"), 400);
+      }, 400);
+    }
+  }
+}
+
+
+/* ==========================================
+   COMPLETION MESSAGE
+   ========================================== */
+
+function getCompletionMessage(percentage) {
+  if (percentage === 0) return "Let's go";
+  if (percentage < 30) return "Good start";
+  if (percentage < 50) return "Building momentum";
+  if (percentage < 70) return "Keep going";
+  if (percentage < 90) return "Doing great";
+  if (percentage < 100) return "Almost there";
+  return "Day complete! 🔥";
+}
+
+
+/* ==========================================
+   DAY COMPLETE CELEBRATION
+   ========================================== */
+
+function showDayComplete() {
+  const celebration = document.getElementById("celebration");
+  if (!celebration) return;
+  celebration.classList.remove("hidden");
+  if (typeof celebrationEffect === "function") celebrationEffect();
+  setTimeout(() => celebration.classList.add("hidden"), 6000);
+}
+
+
+/* ==========================================
+   AUTO REFRESH CLOCK
+   ========================================== */
+
+function startTimetableClock() {
+  if (timetableRefreshTimer) clearInterval(timetableRefreshTimer);
+  timetableRefreshTimer = setInterval(refreshTaskAvailability, TIME_REFRESH_INTERVAL);
+}
+
+function refreshTaskAvailability() {
+  const schedule = schedules[currentMode];
+  if (!schedule) return;
+
+  let needsRender = false;
+  schedule.forEach((task, index) => {
+    const taskId = `${currentMode}_${index}`;
+    const element = document.querySelector(`[data-task-id="${taskId}"]`);
+    if (!element) return;
+    const oldAvailable = element.dataset.available === "true";
+    const newAvailable = canCompleteTask(task.time);
+    if (oldAvailable !== newAvailable) needsRender = true;
+  });
+
+  if (needsRender) {
+    renderTimetable(currentMode);
+  }
+}
+
+
+/* ==========================================
+   CHANGE MODE (to be called from mode selector)
+   ========================================== */
+
+function changeTimetableMode(mode) {
+  if (!schedules[mode]) {
+    console.warn(`Unknown timetable mode: ${mode}`);
+    return;
+  }
+  currentMode = mode;
+  renderTimetable(currentMode);
+  updateProgress();
+}
+
+
+/* ==========================================
+   UTILITY
+   ========================================== */
+
 function formatTime(time24) {
-    const [hours, minutes] = time24.split(":").map(Number);
-    const period = hours >= 12 ? "PM" : "AM";
-    const hours12 = hours % 12 || 12;
-    return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
+  const [hours, minutes] = time24.split(":").map(Number);
+  const period = hours >= 12 ? "PM" : "AM";
+  const hours12 = hours % 12 || 12;
+  return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
 }
 
-/**
- * Escape HTML to prevent XSS
- */
 function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-/**
- * Initialize progress section
- */
 function initProgress() {
-    addProgressGradient();
-    updateProgress();
+  if (typeof addProgressGradient === "function") addProgressGradient();
+  updateProgress();
 }
 
-// Expose
+function destroyTimetableClock() {
+  if (timetableRefreshTimer) {
+    clearInterval(timetableRefreshTimer);
+    timetableRefreshTimer = null;
+  }
+}
+
+
+/* ==========================================
+   GLOBAL EXPOSURE
+   ========================================== */
+
 window.initTimetable = initTimetable;
 window.renderTimetable = renderTimetable;
 window.toggleTask = toggleTask;
 window.updateProgress = updateProgress;
 window.initProgress = initProgress;
 window.schedules = schedules;
-window.updateFloatingProgress = updateFloatingProgress;
+window.changeTimetableMode = changeTimetableMode;
+window.canCompleteTask = canCompleteTask;
+window.refreshTaskAvailability = refreshTaskAvailability;
+window.destroyTimetableClock = destroyTimetableClock;

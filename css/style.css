@@ -1754,3 +1754,54 @@ body {
         padding: 10px 16px;
     }
 }
+
+/* #for time-lock */
+/* Locked task styling */
+.timeline-item.locked {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.timeline-item.locked .timeline-card {
+  border-color: var(--text-muted);
+}
+.timeline-item.locked .timeline-check {
+  opacity: 0.5;
+}
+.timeline-item.locked .task-lock-icon {
+  font-size: 1rem;
+}
+.timeline-item.locked-click {
+  animation: shake 0.3s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Status labels */
+.timeline-status {
+  font-size: 0.75rem;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  display: inline-block;
+  font-weight: 600;
+}
+.completed-status {
+  background: var(--success-glow);
+  color: var(--success);
+}
+.locked-status {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+}
+.available-status {
+  background: var(--accent-glow);
+  color: var(--accent-light);
+}
+.unlock-countdown {
+  font-weight: 400;
+  opacity: 0.7;
+  margin-left: 4px;
+}
