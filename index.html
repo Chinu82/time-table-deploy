@@ -64,25 +64,26 @@
     <main id="mainApp" class="main-app hidden">
 
         <!-- Floating Progress Widget (Top-Right) -->
-        <div class="floating-progress" id="floatingProgress">
-            <div class="floating-progress-ring">
-                <svg viewBox="0 0 100 100">
-                    <defs>
-                        <linearGradient id="floatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="var(--accent)"/>
-                            <stop offset="100%" stop-color="var(--accent-light)"/>
-                        </linearGradient>
-                    </defs>
-                    <circle class="fp-bg" cx="50" cy="50" r="42"/>
-                    <circle class="fp-fill" id="fpRingFill" cx="50" cy="50" r="42"/>
-                </svg>
-                <span class="fp-percent" id="fpPercent">0%</span>
-            </div>
-            <div class="fp-info">
-                <span class="fp-tasks" id="fpTasks">0 / 0</span>
-                <span class="fp-msg" id="fpMsg">Let's go</span>
-            </div>
-        </div>
+<div class="floating-progress" id="floatingProgress">
+    <div class="floating-progress-ring">
+        <svg viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="floatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="var(--accent)"/>
+                    <stop offset="100%" stop-color="var(--accent-light)"/>
+                </linearGradient>
+            </defs>
+            <circle class="fp-bg" cx="50" cy="50" r="42"/>
+            <circle class="fp-fill" id="fpRingFill" cx="50" cy="50" r="42"/>
+        </svg>
+        <span class="fp-percent" id="fpPercent">0%</span>
+    </div>
+    <div class="fp-info">
+        <span class="fp-tasks" id="fpTasks">0 / 0</span>
+        <span class="fp-msg" id="fpMsg">Let's go</span>
+        <a href="#dashboard" class="fp-link-tag" id="fpScheduleLink">📅 Schedule ↓</a>
+    </div>
+</div>
 
         <!-- Theme Toggle (Top-Left) -->
         <button class="theme-toggle-float" id="themeToggle" aria-label="Toggle theme">

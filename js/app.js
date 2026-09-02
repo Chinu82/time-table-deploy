@@ -1,34 +1,27 @@
 /* ==========================================
    STUDYFLOW - MAIN APPLICATION MODULE
-   App initialization, clock, theme, back-to-top, floating progress
    ========================================== */
 
-/**
- * Main app initialization
- */
 function initApp() {
-    // Initialize IndexedDB first
     initIndexedDB().catch(console.error);
-
-    // Initialize theme before anything visible
     initTheme();
-
-    // Initialize background effects
     initParticles();
     initScrollAnimations();
     initParallax();
     initMorphingSection();
-
-    // Initialize login flow
     initLogin();
-
-    // Initialize chatbot
     initChatbot();
-
-    // Add progress gradient to SVG
     addProgressGradient();
 
-    // Handle floating progress visibility on scroll
+    initClock();
+    initBackToTop();
+    initModeSelector();
+    initProfile();
+    initFloatingProgressLink();
+
+    // ADD THIS LINE ↓↓↓
+    if (typeof initTimetable === "function") initTimetable();
+
     window.addEventListener("scroll", () => {
         updateBackToTop();
         updateFloatingProgressVisibility();
@@ -58,13 +51,11 @@ function toggleTheme() {
 
     html.setAttribute("data-theme", next);
     localStorage.setItem(THEME_KEY, next);
-
-    // Update particle colors for theme
     updateParticleColors(next);
 }
 
 function updateParticleColors(theme) {
-    // Particles will naturally adapt on next frame since they read CSS variables
+    // Particles adapt on next frame via CSS variables
 }
 
 /* ==========================================
@@ -73,16 +64,13 @@ function updateParticleColors(theme) {
 
 function showFloatingProgress() {
     const widget = document.getElementById("floatingProgress");
-    if (widget) {
-        widget.classList.add("visible");
-    }
+    if (widget) widget.classList.add("visible");
 }
 
 function updateFloatingProgressVisibility() {
     const widget = document.getElementById("floatingProgress");
     if (!widget) return;
 
-    // Show after scrolling past welcome section
     const welcome = document.getElementById("welcome");
     if (welcome) {
         const welcomeBottom = welcome.offsetTop + welcome.offsetHeight;
@@ -92,6 +80,23 @@ function updateFloatingProgressVisibility() {
             widget.classList.remove("visible");
         }
     }
+}
+
+/* ==========================================
+   FLOATING PROGRESS SCHEDULE LINK
+   ========================================== */
+
+function initFloatingProgressLink() {
+    const link = document.getElementById("fpScheduleLink");
+    if (!link) return;
+
+    link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = document.getElementById("dashboard");
+        if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    });
 }
 
 /* ==========================================
@@ -162,13 +167,10 @@ function updateDateDisplay() {
     const dayEl = document.getElementById("currentDay");
     const dateEl = document.getElementById("currentDate");
 
-    if (dayEl) {
-        dayEl.textContent = days[now.getDay()];
-    }
-    if (dateEl) {
-        dateEl.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-    }
+    if (dayEl) dayEl.textContent = days[now.getDay()];
+    if (dateEl) dateEl.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 }
+
 
 /* ==========================================
    MODE SELECTOR
@@ -214,7 +216,7 @@ function initModeSelector() {
 }
 
 /* ==========================================
-   PROFILE - SIMPLIFIED
+   PROFILE
    ========================================== */
 
 function initProfile() {

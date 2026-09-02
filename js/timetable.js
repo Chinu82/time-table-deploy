@@ -2,23 +2,10 @@
    STUDYFLOW - TIMETABLE MODULE
    ========================================== */
 
-/* ==========================================
-   CONFIGURATION
-   ========================================== */
-
-// Timetable day continues until 4:00 AM.
 const DAY_RESET_HOUR = 4;
-
-// Check the clock every 30 seconds so future tasks automatically become available.
 const TIME_REFRESH_INTERVAL = 30 * 1000;
 
-
-/* ==========================================
-   SCHEDULES (your existing schedules)
-   ========================================== */
-
 const schedules = {
-
   REMOTE: [
     { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
     { time: "09:00", title: "🍳 Breakfast", category: "routine" },
@@ -36,7 +23,6 @@ const schedules = {
     { time: "00:45", title: "🌙 Wind Down — Light Revision / Plan Tomorrow", category: "routine" },
     { time: "01:00", title: "💤 Sleep", category: "routine" }
   ],
-
   WFO: [
     { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
     { time: "09:00", title: "🍳 Breakfast", category: "routine" },
@@ -55,7 +41,6 @@ const schedules = {
     { time: "01:30", title: "🌙 Wind Down — Plan Tomorrow", category: "routine" },
     { time: "01:45", title: "💤 Sleep", category: "routine" }
   ],
-
   HOLIDAY: [
     { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
     { time: "09:00", title: "🍳 Breakfast", category: "routine" },
@@ -81,31 +66,19 @@ const schedules = {
   ]
 };
 
-
-/* ==========================================
-   STATE
-   ========================================== */
-
 let currentMode = "REMOTE";
 let todayTasks = {};
 let timetableRefreshTimer = null;
 
-
 /* ==========================================
-   INITIALIZATION
+   INIT
    ========================================== */
 
 function initTimetable() {
   loadTodayTasks();
   renderTimetable(currentMode);
-  updateProgress();
   startTimetableClock();
 }
-
-
-/* ==========================================
-   GET STUDY DATE (respects 4 AM reset)
-   ========================================== */
 
 function getStudyDate() {
   const now = new Date();
@@ -124,11 +97,6 @@ function getTodayKey() {
   return `${year}-${month}-${day}`;
 }
 
-
-/* ==========================================
-   LOAD / SAVE TODAY TASKS
-   ========================================== */
-
 function loadTodayTasks() {
   const todayKey = getTodayKey();
   const allTasks = Storage.get(STORAGE_KEYS.TASKS, {});
@@ -142,9 +110,8 @@ function saveTodayTasks() {
   Storage.save(STORAGE_KEYS.TASKS, allTasks);
 }
 
-
 /* ==========================================
-   TIME HELPERS (4 AM offset)
+   TIME HELPERS
    ========================================== */
 
 function getCurrentStudyMinutes() {
@@ -182,9 +149,8 @@ function formatWaitTime(minutes) {
   return `${hours} hr ${mins} min`;
 }
 
-
 /* ==========================================
-   RENDER TIMETABLE
+   RENDER
    ========================================== */
 
 function renderTimetable(mode) {
@@ -192,80 +158,108 @@ function renderTimetable(mode) {
   if (!container) return;
 
   currentMode = mode;
+  const schedule = schedules[mode] || schedules.REMOTE;
+  container.innerHTML = "";
 
-  container.classList.add("switching");
+  schedule.forEach((item, index) => {
+    const taskId = `${mode}_${index}`;
+    const isCompleted = todayTasks[taskId] === true;
+    const isAvailable = canCompleteTask(item.time);
+    const minutesUntil = getMinutesUntilTask(item.time);
 
-  setTimeout(() => {
-    const schedule = schedules[mode] || schedules.REMOTE;
-    container.innerHTML = "";
+    const timelineItem = document.createElement("div");
+    timelineItem.className = [
+      "timeline-item",
+      isCompleted ? "completed" : "",
+      !isAvailable ? "locked" : ""
+    ].filter(Boolean).join(" ");
+    timelineItem.dataset.taskId = taskId;
+    timelineItem.dataset.taskTime = item.time;
+    timelineItem.dataset.available = String(isAvailable);
 
-    schedule.forEach((item, index) => {
-      const taskId = `${mode}_${index}`;
-      const isCompleted = todayTasks[taskId] === true;
-      const isAvailable = canCompleteTask(item.time);
-      const minutesUntil = getMinutesUntilTask(item.time);
+    const timeFormatted = formatTime(item.time);
 
-      const timelineItem = document.createElement("div");
-      timelineItem.className = [
-        "timeline-item",
-        isCompleted ? "completed" : "",
-        !isAvailable ? "locked" : ""
-      ].filter(Boolean).join(" ");
-      timelineItem.dataset.taskId = taskId;
-      timelineItem.dataset.taskTime = item.time;
-      timelineItem.dataset.available = String(isAvailable);
-
-      const timeFormatted = formatTime(item.time);
-
-      // Status HTML
-      let statusHtml = "";
-      if (isCompleted) {
-        statusHtml = `<div class="timeline-status completed-status">✓ Completed</div>`;
-      } else if (!isAvailable) {
-        statusHtml = `
-          <div class="timeline-status locked-status">
-            🔒 Available at ${timeFormatted}
-            <span class="unlock-countdown">(${formatWaitTime(minutesUntil)})</span>
-          </div>
-        `;
-      } else {
-        statusHtml = `<div class="timeline-status available-status">✓ Available now</div>`;
-      }
-
-      // Card HTML
-      timelineItem.innerHTML = `
-        <div class="timeline-dot"></div>
-        <div class="timeline-card glass-card">
-          <div class="timeline-time">${timeFormatted}</div>
-          <h4 class="timeline-title">${escapeHtml(item.title)}</h4>
-          <span class="timeline-category">${escapeHtml(item.category)}</span>
-          ${statusHtml}
-          <div class="timeline-check">
-            ${!isAvailable && !isCompleted
-              ? `<span class="task-lock-icon">🔒</span>`
-              : `<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>`
-            }
-          </div>
+    let statusHtml = "";
+    if (isCompleted) {
+      statusHtml = `<div class="timeline-status completed-status">✓ Completed</div>`;
+    } else if (!isAvailable) {
+      statusHtml = `
+        <div class="timeline-status locked-status">
+          🔒 Available at ${timeFormatted}
+          <span class="unlock-countdown">(${formatWaitTime(minutesUntil)})</span>
         </div>
       `;
+    } else {
+      statusHtml = `<div class="timeline-status available-status">✓ Available now</div>`;
+    }
 
-      timelineItem.addEventListener("click", () => toggleTask(taskId));
+    timelineItem.innerHTML = `
+      <div class="timeline-dot"></div>
+      <div class="timeline-card glass-card">
+        <div class="timeline-time">${timeFormatted}</div>
+        <h4 class="timeline-title">${escapeHtml(item.title)}</h4>
+        <span class="timeline-category">${escapeHtml(item.category)}</span>
+        ${statusHtml}
+        <div class="timeline-check">
+          ${!isAvailable && !isCompleted
+            ? `<span class="task-lock-icon">🔒</span>`
+            : `<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>`
+          }
+        </div>
+      </div>
+    `;
 
-      container.appendChild(timelineItem);
+    timelineItem.addEventListener("click", () => toggleTask(taskId));
+    container.appendChild(timelineItem);
 
-      if (window.timelineObserver) {
-        window.timelineObserver.observe(timelineItem);
-      }
-    });
+    if (window.timelineObserver) {
+      window.timelineObserver.observe(timelineItem);
+    }
+  });
 
-    container.classList.remove("switching");
-    if (typeof init3DTilt === "function") init3DTilt();
-  }, 300);
+  updateProgress();
+  if (typeof init3DTilt === "function") init3DTilt();
 }
 
+/* ==========================================
+   UPDATE PROGRESS  (ONLY ONE — correct IDs)
+   ========================================== */
+
+function updateProgress() {
+  const schedule = schedules[currentMode];
+  if (!schedule) return;
+
+  const totalTasks = schedule.length;
+  const completedCount = Object.keys(todayTasks)
+    .filter(key => key.startsWith(currentMode + "_") && todayTasks[key] === true)
+    .length;
+
+  const percentage = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+
+  const ringFill = document.getElementById("fpRingFill");
+  const percentEl = document.getElementById("fpPercent");
+  const tasksEl  = document.getElementById("fpTasks");
+  const msgEl    = document.getElementById("fpMsg");
+
+  if (ringFill) {
+    const offset = 264 - (264 * percentage) / 100;
+    ringFill.style.strokeDashoffset = offset;
+  }
+
+  if (percentEl) percentEl.textContent = `${percentage}%`;
+  if (tasksEl)   tasksEl.textContent   = `${completedCount} / ${totalTasks}`;
+
+  if (msgEl) {
+    if (totalTasks === 0)       msgEl.textContent = "Let's go";
+    else if (percentage === 0)  msgEl.textContent = "Start strong";
+    else if (percentage < 50)   msgEl.textContent = "Keep going";
+    else if (percentage < 100)  msgEl.textContent = "Almost there";
+    else                        msgEl.textContent = "All done! 🔥";
+  }
+}
 
 /* ==========================================
-   TOGGLE TASK (no full re‑render)
+   TOGGLE TASK
    ========================================== */
 
 function toggleTask(taskId) {
@@ -280,7 +274,6 @@ function toggleTask(taskId) {
   const item = document.querySelector(`[data-task-id="${taskId}"]`);
   if (!item) return;
 
-  // Prevent clicking locked tasks
   if (!canCompleteTask(task.time)) {
     showTaskLockedMessage(task);
     item.classList.add("locked-click");
@@ -292,7 +285,6 @@ function toggleTask(taskId) {
   const newCompleted = !isCompleted;
   todayTasks[taskId] = newCompleted;
 
-  // Update only this card
   if (newCompleted) {
     item.classList.add("completed", "just-completed");
     setTimeout(() => item.classList.remove("just-completed"), 600);
@@ -300,7 +292,6 @@ function toggleTask(taskId) {
     item.classList.remove("completed");
   }
 
-  // Update status element
   const statusEl = item.querySelector(".timeline-status");
   if (statusEl) {
     if (newCompleted) {
@@ -312,7 +303,6 @@ function toggleTask(taskId) {
     }
   }
 
-  // Update check icon
   const checkEl = item.querySelector(".timeline-check");
   if (checkEl) {
     checkEl.innerHTML = `<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>`;
@@ -321,7 +311,6 @@ function toggleTask(taskId) {
   saveTodayTasks();
   updateProgress();
 
-  // Check day completion
   const totalTasks = schedule.length;
   const completedCount = Object.keys(todayTasks)
     .filter(key => key.startsWith(currentMode + "_") && todayTasks[key] === true)
@@ -332,9 +321,8 @@ function toggleTask(taskId) {
   }
 }
 
-
 /* ==========================================
-   LOCKED TASK MESSAGE (toast)
+   LOCKED MESSAGE
    ========================================== */
 
 function showTaskLockedMessage(task) {
@@ -343,11 +331,9 @@ function showTaskLockedMessage(task) {
   const waitTime = formatWaitTime(minutes);
   const msg = `🔒 Available at ${formattedTime}${waitTime ? ` — ${waitTime} remaining` : ""}`;
 
-  // Use a simple toast if available, else console
   if (typeof showToast === "function") {
     showToast(msg);
   } else {
-    // Create a temporary toast element
     const toast = document.createElement("div");
     toast.style.cssText = `
       position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
@@ -358,7 +344,6 @@ function showTaskLockedMessage(task) {
     `;
     toast.textContent = msg;
     document.body.appendChild(toast);
-
     setTimeout(() => {
       toast.style.opacity = "0";
       setTimeout(() => toast.remove(), 300);
@@ -366,82 +351,8 @@ function showTaskLockedMessage(task) {
   }
 }
 
-
 /* ==========================================
-   UPDATE PROGRESS (uses your existing elements)
-   ========================================== */
-
-function updateProgress() {
-  const schedule = schedules[currentMode];
-  if (!schedule) return;
-
-  const totalTasks = schedule.length;
-  const completedCount = Object.keys(todayTasks)
-    .filter(key => key.startsWith(currentMode + "_") && todayTasks[key] === true)
-    .length;
-
-  const percentage = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
-
-  // Update ring
-  const ringFill = document.getElementById("progressRingFill");
-  if (ringFill) {
-    const circumference = 2 * Math.PI * 85;
-    const offset = circumference - (percentage / 100) * circumference;
-    ringFill.style.strokeDashoffset = offset;
-  }
-
-  // Update percent
-  const percentEl = document.getElementById("progressPercent");
-  if (percentEl) {
-    percentEl.textContent = percentage + "%";
-  }
-
-  // Update tasks label
-  const tasksEl = document.getElementById("progressTasks");
-  if (tasksEl) {
-    tasksEl.textContent = `${completedCount} / ${totalTasks} Tasks`;
-  }
-
-  // Update bar
-  const barFill = document.getElementById("progressBarFill");
-  if (barFill) {
-    barFill.style.width = percentage + "%";
-  }
-
-  // Update message with crossfade
-  const messageEl = document.getElementById("progressMessage");
-  if (messageEl) {
-    const newMessage = getCompletionMessage(percentage);
-    if (messageEl.textContent !== newMessage) {
-      messageEl.classList.add("fade-out");
-      setTimeout(() => {
-        messageEl.textContent = newMessage;
-        messageEl.classList.remove("fade-out");
-        messageEl.classList.add("fade-in");
-        setTimeout(() => messageEl.classList.remove("fade-in"), 400);
-      }, 400);
-    }
-  }
-}
-
-
-/* ==========================================
-   COMPLETION MESSAGE
-   ========================================== */
-
-function getCompletionMessage(percentage) {
-  if (percentage === 0) return "Let's go";
-  if (percentage < 30) return "Good start";
-  if (percentage < 50) return "Building momentum";
-  if (percentage < 70) return "Keep going";
-  if (percentage < 90) return "Doing great";
-  if (percentage < 100) return "Almost there";
-  return "Day complete! 🔥";
-}
-
-
-/* ==========================================
-   DAY COMPLETE CELEBRATION
+   DAY COMPLETE
    ========================================== */
 
 function showDayComplete() {
@@ -452,9 +363,8 @@ function showDayComplete() {
   setTimeout(() => celebration.classList.add("hidden"), 6000);
 }
 
-
 /* ==========================================
-   AUTO REFRESH CLOCK
+   AUTO REFRESH
    ========================================== */
 
 function startTimetableClock() {
@@ -476,14 +386,11 @@ function refreshTaskAvailability() {
     if (oldAvailable !== newAvailable) needsRender = true;
   });
 
-  if (needsRender) {
-    renderTimetable(currentMode);
-  }
+  if (needsRender) renderTimetable(currentMode);
 }
 
-
 /* ==========================================
-   CHANGE MODE (to be called from mode selector)
+   MODE CHANGE
    ========================================== */
 
 function changeTimetableMode(mode) {
@@ -493,12 +400,10 @@ function changeTimetableMode(mode) {
   }
   currentMode = mode;
   renderTimetable(currentMode);
-  updateProgress();
 }
 
-
 /* ==========================================
-   UTILITY
+   UTILITIES
    ========================================== */
 
 function formatTime(time24) {
@@ -514,18 +419,12 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-function initProgress() {
-  if (typeof addProgressGradient === "function") addProgressGradient();
-  updateProgress();
-}
-
 function destroyTimetableClock() {
   if (timetableRefreshTimer) {
     clearInterval(timetableRefreshTimer);
     timetableRefreshTimer = null;
   }
 }
-
 
 /* ==========================================
    GLOBAL EXPOSURE
@@ -535,7 +434,6 @@ window.initTimetable = initTimetable;
 window.renderTimetable = renderTimetable;
 window.toggleTask = toggleTask;
 window.updateProgress = updateProgress;
-window.initProgress = initProgress;
 window.schedules = schedules;
 window.changeTimetableMode = changeTimetableMode;
 window.canCompleteTask = canCompleteTask;
