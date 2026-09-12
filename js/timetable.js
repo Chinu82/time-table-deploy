@@ -42,28 +42,62 @@ const schedules = {
     { time: "01:45", title: "💤 Sleep", category: "routine" }
   ],
   HOLIDAY: [
-    { time: "08:30", title: "🌅 Wake Up & Freshen Up", category: "routine" },
-    { time: "09:00", title: "🍳 Breakfast", category: "routine" },
-    { time: "09:30", title: "📘 Session 1 — Reasoning (High-Level Puzzles / Input-Output)", category: "reasoning" },
-    { time: "10:45", title: "☕ Short Break", category: "break" },
-    { time: "11:00", title: "📗 Session 2 — English (RC Passage / Grammar / Vocab)", category: "english" },
-    { time: "12:15", title: "☕ Short Break", category: "break" },
-    { time: "12:30", title: "📙 Session 3 — Quant (Arithmetic / Algebra)", category: "quant" },
-    { time: "13:45", title: "🍱 Lunch & Relax", category: "routine" },
-    { time: "14:30", title: "😌 Rest / Personal Time", category: "routine" },
-    { time: "15:30", title: "📕 Session 4 — GK/GS (History / Geography / Polity / Science)", category: "gkgs" },
-    { time: "16:45", title: "☕ Short Break", category: "break" },
-    { time: "17:00", title: "🧐 Mock Test / PYQ / Doubt Analysis", category: "doubt" },
-    { time: "18:15", title: "🚶 Evening Walk / Relax", category: "routine" },
-    { time: "19:00", title: "🍽️ Dinner", category: "routine" },
-    { time: "19:45", title: "📗 Session 5 — English (Spelling / Fillers / Revision)", category: "english" },
-    { time: "21:00", title: "☕ Short Break", category: "break" },
-    { time: "21:15", title: "📘 Session 6 — Reasoning (Puzzles / Data Sufficiency)", category: "reasoning" },
-    { time: "22:30", title: "☕ Short Break", category: "break" },
-    { time: "22:45", title: "📙 Session 7 — Quant (DI / Miscellaneous / Weak Topics)", category: "quant" },
-    { time: "00:00", title: "🌙 Wind Down — Light Revision / Plan Tomorrow", category: "routine" },
-    { time: "00:30", title: "💤 Sleep", category: "routine" }
-  ]
+  // ───────── MORNING START ─────────
+  { time: "05:00", title: "🌅 Wake Up & Freshen Up", category: "routine" },
+  { time: "05:20", title: "🧘 Meditation — Calm Mind & Focus", category: "meditation" },
+  { time: "05:40", title: "🚶 Light Walk / Stretching", category: "routine" },
+  { time: "06:00", title: "🍳 Breakfast & Get Ready", category: "routine" },
+  { time: "06:20", title: "🎯 Student Mindset — Set Today's SSC-CGL Targets", category: "mindset" },
+
+  // ═══════════════════════════════════
+  // ENGLISH — 4 HOURS
+  // 3 HOURS LEARNING + 1 HOUR PRACTICE
+  // ═══════════════════════════════════
+  { time: "06:30", title: "📗 English — Grammar & Core Concepts", category: "english" },
+  { time: "07:45", title: "☕ Short Break", category: "break" },
+
+  { time: "08:00", title: "📗 English — Vocabulary + Reading Comprehension", category: "english" },
+  { time: "09:15", title: "☕ Short Break", category: "break" },
+
+  { time: "09:30", title: "📗 English — Practice Set / Error Spotting", category: "english" },
+  { time: "10:30", title: "📝 English — PYQ + Error Analysis", category: "english" },
+
+  // ═══════════════════════════════════
+  // GK/GS — 4 HOURS
+  // 3 HOURS LEARNING + 1 HOUR PRACTICE
+  // ═══════════════════════════════════
+  { time: "11:30", title: "📕 GK/GS — Core Concepts (History / Polity)", category: "gkgs" },
+  { time: "12:45", title: "☕ Short Break", category: "break" },
+
+  { time: "13:00", title: "📕 GK/GS — Geography / Science / Static GK", category: "gkgs" },
+  { time: "14:15", title: "🍱 Lunch & Rest", category: "routine" },
+
+  { time: "14:45", title: "📕 GK/GS — Important Facts + Revision", category: "gkgs" },
+  { time: "15:45", title: "📝 GK/GS — PYQ + One-Liner Revision", category: "gkgs" },
+
+  // ═══════════════════════════════════
+  // REASONING — 3 HOURS
+  // ═══════════════════════════════════
+  { time: "16:45", title: "📘 Reasoning — Puzzles / Seating Arrangement", category: "reasoning" },
+  { time: "17:45", title: "☕ Short Break", category: "break" },
+
+  { time: "18:00", title: "📘 Reasoning — Logic / Data Sufficiency / PYQ", category: "reasoning" },
+  { time: "19:00", title: "🍽️ Dinner & Relax", category: "routine" },
+
+  // ═══════════════════════════════════
+  // QUANT — 3 HOURS
+  // ═══════════════════════════════════
+  { time: "19:30", title: "📙 Quant — Arithmetic / Algebra", category: "quant" },
+  { time: "20:30", title: "📙 Quant — PYQ + Weak Topics", category: "quant" },
+
+  // ═══════════════════════════════════
+  // DAY-END REVIEW
+  // ═══════════════════════════════════
+  { time: "21:30", title: "📊 Daily Review — What Did I Complete?", category: "mindset" },
+  { time: "21:40", title: "🧘 Meditation — Clear Mind & Reflect", category: "meditation" },
+  { time: "21:50", title: "📋 Plan Tomorrow's Study Targets", category: "mindset" },
+  { time: "22:00", title: "💤 Sleep", category: "routine" }
+]
 };
 
 let currentMode = "REMOTE";
